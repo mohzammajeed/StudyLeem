@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<title>Admin Panel – StudyLeem</title>
+<link rel="icon" type="image/x-icon" href="/favicon.ico">
+<link rel="stylesheet" href="/styles.css">
+<link rel="stylesheet" href="/pro.css">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-ZNNDTM33RB"></script>
+<script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-ZNNDTM33RB');</script>
+<style>
+/* Admin extra styles */
+.upload-card{background:#fff;border-radius:16px;padding:2rem;box-shadow:0 2px 12px rgba(0,0,0,.06);margin-bottom:2rem;}
+.content-type-row{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1.25rem;}
+.content-type-label{display:flex;flex-direction:column;align-items:center;border:2px solid #e5e7eb;border-radius:12px;padding:1rem;cursor:pointer;transition:all .2s;text-align:center;}
+.content-type-label input{display:none;}
+.content-type-label:has(input:checked){border-color:#2563eb;background:#eff6ff;}
+.content-type-label .ct-icon{font-size:1.75rem;margin-bottom:.25rem;}
+.preview-pill{display:inline-block;background:#eff6ff;color:#2563eb;border:1px solid #bfdbfe;border-radius:999px;padding:.2rem .75rem;font-size:.8rem;font-weight:600;margin-top:.5rem;}
+.url-preview-link{font-size:.78rem;color:#6b7280;margin-top:.35rem;word-break:break-all;}
+.url-preview-link a{color:#2563eb;text-decoration:underline;}
+</style>
+</head>
+<body class="admin-body">
+
+<!-- Login -->
+<div id="loginPage" class="admin-login-container">
+  <div class="login-box">
+    <img src="/logo.png" alt="StudyLeem" class="login-logo">
+    <h2>Admin Login</h2>
+    <form id="loginForm">
+      <div class="form-group"><label>Email</label><input type="email" id="email" required autocomplete="username"></div>
+      <div class="form-group"><label>Password</label><input type="password" id="password" required autocomplete="current-password"></div>
+      <button type="submit" class="btn btn-primary btn-block">Login</button>
+      <div id="loginError" class="error-message"></div>
+    </form>
+  </div>
+</div>
+
+<!-- Dashboard -->
+<div id="dashboardPage" class="admin-container" style="display:none">
+  <aside class="admin-sidebar" id="adminSidebar">
+    <div class="sidebar-header">
+      <h2>Admin Panel</h2>
+      <button class="sidebar-close" id="sidebarClose">×</button>
+    </div>
+    <nav class="admin-nav">
+      <a href="#" class="admin-nav-link active" data-page="upload">📤 Upload</a>
+      <a href="#" class="admin-nav-link" data-page="manage">📚 Manage</a>
+      <a href="#" class="admin-nav-link" data-page="stats">📊 Stats</a>
+      <a href="#" class="admin-nav-link" data-page="messages">✉️ Messages</a>
+      <a href="#" id="logoutBtn" class="admin-nav-link logout">🚪 Logout</a>
+    </nav>
+  </aside>
+
+  <main class="admin-main">
+    <div class="admin-header">
+      <button class="mobile-sidebar-toggle" id="sidebarToggle">☰</button>
+      <h1 id="pageTitle">Upload Material</h1>
+    </div>
+
+    <div class="admin-content">
+
+      <!-- ── Upload ── -->
+      <div id="uploadPage" class="admin-page active">
+        <div class="upload-card">
+
+          <!-- Step 1: Material Type (notes / books) -->
+          <div class="material-type-selector" style="margin-bottom:1.5rem;">
+            <label class="type-radio">
+              <input type="radio" name="materialType" value="notes" checked>
+              <span class="type-label"><span class="type-icon">📝</span><span>Notes</span></span>
+            </label>
+            <label class="type-radio">
+              <input type="radio" name="materialType" value="books">
+              <span class="type-label"><span class="type-icon">📚</span><span>Books</span></span>
+            </label>
+          </div>
+
+          <!-- Step 2: Content Type (chapter / exercise) — only for notes -->
+          <div id="contentTypeRow" class="content-type-row">
+            <label class="content-type-label">
+              <input type="radio" name="contentType" value="chapter" checked>
+              <span class="ct-icon">📖</span>
+              <strong>Chapter Note</strong>
+              <small>e.g. Chapter 1, Chapter 2</small>
+            </label>
+            <label class="content-type-label">
+              <input type="radio" name="contentType" value="exercise">
+              <span class="ct-icon">🧮</span>
+              <strong>Math Exercise</strong>
+              <small>e.g. Exercise 1.1, 2.3</small>
+            </label>
+          </div>
+
+          <form id="uploadForm">
+            <div class="form-row">
+              <div class="form-group">
+                <label>Title *</label>
+                <input type="text" id="title" required placeholder="e.g. Chapter 1: Introduction to Physics">
+              </div>
+              <div class="form-group">
+                <label>Class *</label>
+                <select id="class" required>
+                  <option value="">Select</option>
+                  <option value="9">9</option><option value="10">10</option>
+                  <option value="11">11</option><option value="12">12</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="form-row">
+              <div class="form-group">
+                <label>Subject *</label>
+                <input type="text" id="subject" required placeholder="e.g. Physics, Mathematics, Chemistry">
+              </div>
+              <div class="form-group" id="chapterGroup">
+                <label id="chapterLabel">Chapter Number *</label>
+                <input type="number" id="chapterNumber" min="1" placeholder="e.g. 1">
+              </div>
+            </div>
+
+            <!-- Exercise number — only for exercise type -->
+            <div class="form-row" id="exerciseRow" style="display:none;">
+              <div class="form-group">
+                <label>Exercise Number *</label>
+                <input type="number" id="exerciseNumber" min="1" step="0.1" placeholder="e.g. 1 (for Ex 2.1 enter 1)">
+                <small style="color:#6b7280;">For Exercise 2.1: Chapter=2, Exercise=1</small>
+              </div>
+              <div class="form-group">
+                <div class="preview-pill" id="exercisePreview">Preview: Exercise –</div>
+              </div>
+            </div>
+
+            <div class="form-group" id="chapterTitleGroup">
+              <label id="chapterTitleLabel">Chapter Title *</label>
+              <input type="text" id="chapterTitle" placeholder="e.g. Introduction to Forces">
+            </div>
+
+            <div class="form-group">
+              <label>Cover Image URL *</label>
+              <input type="url" id="coverImage" required placeholder="https://...">
+            </div>
+
+            <div class="form-group">
+              <label>PDF Link * <small style="color:#6b7280;">(Google Drive share link recommended)</small></label>
+              <input type="url" id="pdfLink" required placeholder="https://drive.google.com/file/d/...">
+              <div class="url-preview-link" id="pdfPreviewLink"></div>
+            </div>
+
+            <div class="form-group">
+              <label>Description *</label>
+              <textarea id="description" rows="3" required placeholder="Brief description of this material..."></textarea>
+            </div>
+
+            <button type="submit" class="btn btn-primary btn-block">
+              <span id="uploadBtnText">Upload Material</span>
+            </button>
+            <div id="uploadStatus" class="status-message"></div>
+            <div id="generatedUrl" style="display:none;margin-top:1rem;padding:1rem;background:#f0fdf4;border:1px solid #86efac;border-radius:8px;">
+              <strong>✅ Material URL:</strong><br>
+              <a id="generatedUrlLink" href="#" target="_blank" style="color:#2563eb;word-break:break-all;"></a>
+            </div>
+          </form>
+        </div>
+      </div>
+
+      <!-- ── Manage ── -->
+      <div id="managePage" class="admin-page">
+        <div class="manage-filters">
+          <input type="text" id="searchMaterials" placeholder="Search materials..." class="search-input">
+          <select id="filterClass"><option value="">All Classes</option><option value="9">Class 9</option><option value="10">Class 10</option><option value="11">Class 11</option><option value="12">Class 12</option></select>
+          <select id="filterType"><option value="">All Types</option><option value="notes">Notes</option><option value="books">Books</option></select>
+        </div>
+        <div class="table-responsive">
+          <table class="admin-table">
+            <thead><tr><th>Cover</th><th>Title</th><th>Type</th><th>Class</th><th>Subject</th><th>Ch/Ex</th><th>URL</th><th>Actions</th></tr></thead>
+            <tbody id="materialsTableBody"><tr><td colspan="8" class="loading">Loading...</td></tr></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- ── Stats ── -->
+      <div id="statsPage" class="admin-page">
+        <div class="stats-grid">
+          <div class="stat-card"><div class="stat-number" id="totalMaterialsStat">—</div><div class="stat-label">Total Materials</div></div>
+          <div class="stat-card"><div class="stat-number" id="totalBooksStat">—</div><div class="stat-label">Books</div></div>
+          <div class="stat-card"><div class="stat-number" id="totalNotesStat">—</div><div class="stat-label">Notes</div></div>
+        </div>
+        <h3 style="margin:2rem 0 1rem;">By Class</h3>
+        <div class="stats-grid">
+          <div class="stat-card"><div class="stat-number" id="class9Count">—</div><div class="stat-label">Class 9</div></div>
+          <div class="stat-card"><div class="stat-number" id="class10Count">—</div><div class="stat-label">Class 10</div></div>
+          <div class="stat-card"><div class="stat-number" id="class11Count">—</div><div class="stat-label">Class 11</div></div>
+          <div class="stat-card"><div class="stat-number" id="class12Count">—</div><div class="stat-label">Class 12</div></div>
+        </div>
+        <div class="tool-card">
+          <strong>Backup &amp; Import</strong>
+          <p>Export all materials as JSON, restore from a JSON file (e.g. saved from your old site's <code>/api/materials</code>), or copy from the old Firebase project. IDs are preserved; safe to run more than once.</p>
+          <div class="tool-actions">
+            <button type="button" id="exportBtn" class="btn btn-secondary">⬇ Export JSON</button>
+            <label class="btn btn-secondary" style="cursor:pointer">⬆ Import JSON<input type="file" id="importFile" accept=".json,application/json" hidden></label>
+            <button type="button" id="importBtn" class="btn btn-primary">Import from old Firebase</button>
+          </div>
+          <div id="importStatus" class="tool-status"></div>
+        </div>
+      </div>
+
+      <!-- ── Messages ── -->
+      <div id="messagesPage" class="admin-page">
+        <div class="manage-filters">
+          <input type="text" id="searchMessages" placeholder="Search messages..." class="search-input">
+          <select id="filterMessageStatus"><option value="">All</option><option value="unread">Unread</option><option value="read">Read</option></select>
+        </div>
+        <div class="table-responsive">
+          <table class="admin-table">
+            <thead><tr><th>Status</th><th>Name</th><th>Email</th><th>Type</th><th>Preview</th><th>Date</th><th>Actions</th></tr></thead>
+            <tbody id="messagesTableBody"><tr><td colspan="7" class="loading">Loading...</td></tr></tbody>
+          </table>
+        </div>
+      </div>
+
+    </div><!-- /admin-content -->
+  </main>
+</div><!-- /dashboardPage -->
+
+<!-- Edit Modal -->
+<div id="editModal" class="modal">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h2>Edit Material</h2>
+      <button id="closeEditModal" class="modal-close">×</button>
+    </div>
+    <form id="editForm">
+      <input type="hidden" id="editId">
+      <input type="hidden" id="editType">
+      <div class="form-row">
+        <div class="form-group"><label>Title *</label><input type="text" id="editTitle" required></div>
+        <div class="form-group"><label>Class *</label><select id="editClass" required><option value="9">9</option><option value="10">10</option><option value="11">11</option><option value="12">12</option></select></div>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label>Subject *</label><input type="text" id="editSubject" required></div>
+        <div class="form-group" id="editChapterRow" style="display:none;">
+          <label>Chapter Number</label><input type="number" id="editChapterNumber">
+          <label style="margin-top:.5rem;">Exercise Number</label><input type="number" id="editExerciseNumber" step="0.1">
+          <label style="margin-top:.5rem;">Chapter Title</label><input type="text" id="editChapterTitle">
+        </div>
+      </div>
+      <div class="form-group"><label>Cover Image URL</label><input type="url" id="editCoverImage"></div>
+      <div class="form-group"><label>PDF Link</label><input type="url" id="editPdfLink"></div>
+      <div class="form-group"><label>Description</label><textarea id="editDescription" rows="3"></textarea></div>
+      <div style="display:flex;gap:1rem;justify-content:flex-end;margin-top:1.5rem;">
+        <button type="button" class="btn btn-secondary" id="closeEditModal2">Cancel</button>
+        <button type="submit" class="btn btn-primary">Save Changes</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- View Message Modal -->
+<div id="viewMessageModal" class="modal">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h2>Contact Message</h2>
+      <button id="closeViewMessage" class="modal-close">×</button>
+    </div>
+    <div id="viewMessageBody"></div>
+  </div>
+</div>
+
+<script type="module" src="/firebase-client.js"></script>
+<script src="/admin.js"></script>
+</body>
+</html>

@@ -1,0 +1,818 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LeemAI – FBISE AI Study Assistant | StudyLeem</title>
+<meta name="description" content="Ask LeemAI your FBISE questions — get instant answers on Chemistry, Physics, Biology, Math and more for Class 9-12 Federal Board Pakistan.">
+<link rel="canonical" href="https://studyleem.vercel.app/leemai">
+<link rel="icon" type="image/x-icon" href="/favicon.ico">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon.png">
+<link rel="icon" type="image/png" sizes="192x192" href="/favicon-192.png">
+<link rel="apple-touch-icon" href="/favicon-192.png">
+<link rel="manifest" href="/manifest.json">
+<link rel="stylesheet" href="/styles.css">
+<link rel="stylesheet" href="/pro.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1372125039445576" crossorigin="anonymous"></script>
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-ZNNDTM33RB"></script>
+<script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-ZNNDTM33RB');</script>
+
+<style>
+/* ── LeemAI-specific styles (no changes to styles.css) ── */
+
+.leemai-page {
+  display: flex;
+  flex-direction: column;
+  height: calc(100vh - 71px); /* full height minus header */
+}
+
+/* Page intro banner */
+.leemai-banner {
+  background: linear-gradient(135deg, #1e40af 0%, #2563eb 60%, #1d4ed8 100%);
+  color: white;
+  padding: 1.5rem 0;
+  text-align: center;
+  border-bottom: 4px solid #f97316;
+  flex-shrink: 0;
+}
+.leemai-banner h1 {
+  font-family: 'Poppins', sans-serif;
+  font-size: 1.6rem;
+  font-weight: 700;
+  margin-bottom: 0.25rem;
+}
+.leemai-banner p {
+  font-size: 0.9rem;
+  opacity: 0.9;
+}
+.leemai-banner-badges {
+  display: flex;
+  gap: 0.5rem;
+  justify-content: center;
+  margin-top: 0.75rem;
+  flex-wrap: wrap;
+}
+.leemai-badge {
+  background: rgba(255,255,255,0.15);
+  border: 1px solid rgba(255,255,255,0.3);
+  color: white;
+  padding: 0.2rem 0.65rem;
+  border-radius: 20px;
+  font-size: 0.75rem;
+  font-weight: 500;
+}
+
+/* Chat layout */
+.chat-layout {
+  display: flex;
+  flex: 1;
+  overflow: hidden;
+  background: var(--bg-light);
+}
+
+/* Sidebar */
+.chat-sidebar {
+  width: 240px;
+  background: white;
+  border-right: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  flex-shrink: 0;
+  overflow-y: auto;
+}
+.sidebar-section {
+  padding: 1.25rem 1rem;
+  border-bottom: 1px solid var(--border);
+}
+.sidebar-label {
+  font-size: 0.7rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--text-lighter);
+  margin-bottom: 0.75rem;
+}
+.subject-chip {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  width: 100%;
+  padding: 0.55rem 0.75rem;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--bg-light);
+  color: var(--text);
+  font-size: 0.85rem;
+  font-weight: 500;
+  cursor: pointer;
+  margin-bottom: 0.4rem;
+  transition: all 0.2s;
+  text-align: left;
+  font-family: inherit;
+}
+.subject-chip:hover {
+  border-color: var(--primary);
+  color: var(--primary);
+  background: #eff6ff;
+}
+.subject-chip.active {
+  border-color: var(--primary);
+  background: var(--primary);
+  color: white;
+}
+.chip-icon { font-size: 1rem; flex-shrink: 0; }
+
+.quick-qs { display: flex; flex-direction: column; gap: 0.4rem; }
+.quick-q {
+  padding: 0.55rem 0.75rem;
+  background: var(--bg-light);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  font-size: 0.78rem;
+  color: var(--text);
+  cursor: pointer;
+  transition: all 0.2s;
+  text-align: left;
+  font-family: inherit;
+  line-height: 1.4;
+}
+.quick-q:hover {
+  border-color: var(--primary);
+  color: var(--primary);
+  background: #eff6ff;
+}
+
+/* Main chat area */
+.chat-main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+/* Messages */
+#chatMessages {
+  flex: 1;
+  overflow-y: auto;
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+  scroll-behavior: smooth;
+}
+#chatMessages::-webkit-scrollbar { width: 5px; }
+#chatMessages::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+
+/* Welcome state */
+.welcome-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 3rem 1rem;
+  gap: 1rem;
+  flex: 1;
+}
+.welcome-icon-wrap {
+  width: 72px; height: 72px;
+  background: linear-gradient(135deg, #2563eb, #1d4ed8);
+  border-radius: 20px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 2rem;
+  box-shadow: 0 8px 20px rgba(37,99,235,0.25);
+}
+.welcome-state h2 {
+  font-family: 'Poppins', sans-serif;
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: var(--text);
+}
+.welcome-state p {
+  color: var(--text-light);
+  font-size: 0.9rem;
+  max-width: 380px;
+  line-height: 1.6;
+}
+.welcome-chips {
+  display: flex; flex-wrap: wrap; gap: 0.5rem; justify-content: center;
+  margin-top: 0.5rem; max-width: 460px;
+}
+.welcome-chip {
+  background: white;
+  border: 1px solid var(--border);
+  color: var(--text);
+  font-size: 0.8rem;
+  padding: 0.45rem 0.9rem;
+  border-radius: 20px;
+  cursor: pointer;
+  transition: all 0.2s;
+  font-family: inherit;
+}
+.welcome-chip:hover {
+  border-color: var(--primary);
+  color: var(--primary);
+  background: #eff6ff;
+}
+
+/* Message rows */
+.msg-row {
+  display: flex;
+  gap: 0.75rem;
+  animation: slideIn 0.25s ease forwards;
+  max-width: 700px;
+}
+@keyframes slideIn {
+  from { opacity: 0; transform: translateY(6px); }
+  to   { opacity: 1; transform: none; }
+}
+.msg-row.user { align-self: flex-end; flex-direction: row-reverse; }
+.msg-row.ai   { align-self: flex-start; }
+
+.msg-avatar {
+  width: 34px; height: 34px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 0.85rem; font-weight: 700;
+  flex-shrink: 0; margin-top: 2px;
+}
+.msg-row.user .msg-avatar {
+  background: linear-gradient(135deg, #2563eb, #1e40af);
+  color: white;
+}
+.msg-row.ai .msg-avatar {
+  background: #eff6ff;
+  color: var(--primary);
+  border: 2px solid #bfdbfe;
+  font-size: 1rem;
+}
+
+.msg-content { max-width: calc(100% - 46px); }
+.msg-bubble {
+  padding: 0.875rem 1.1rem;
+  border-radius: 14px;
+  font-size: 0.9rem;
+  line-height: 1.65;
+}
+.msg-row.user .msg-bubble {
+  background: linear-gradient(135deg, #2563eb, #1e40af);
+  color: white;
+  border-radius: 14px 4px 14px 14px;
+}
+.msg-row.ai .msg-bubble {
+  background: white;
+  color: var(--text);
+  border: 1px solid var(--border);
+  border-radius: 4px 14px 14px 14px;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.05);
+}
+
+/* AI bubble markdown */
+.msg-row.ai .msg-bubble strong { color: var(--primary); font-weight: 600; }
+.msg-row.ai .msg-bubble em     { color: var(--text-light); font-style: italic; }
+.msg-row.ai .msg-bubble ul     { padding-left: 1.2rem; margin: 0.5rem 0; }
+.msg-row.ai .msg-bubble li     { margin-bottom: 0.35rem; }
+.msg-row.ai .msg-bubble p      { margin-bottom: 0.5rem; }
+.msg-row.ai .msg-bubble p:last-child { margin-bottom: 0; }
+
+/* Confidence bar */
+.conf-row {
+  display: flex; align-items: center; gap: 0.5rem;
+  margin-top: 0.6rem;
+  font-size: 0.72rem; color: var(--text-lighter);
+}
+.conf-bar {
+  height: 3px; flex: 1;
+  background: var(--border); border-radius: 2px; overflow: hidden;
+  max-width: 100px;
+}
+.conf-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--primary), #3b82f6);
+  border-radius: 2px;
+  transition: width 0.6s ease;
+}
+.topic-tag {
+  background: #eff6ff; color: var(--primary);
+  border: 1px solid #bfdbfe;
+  padding: 0.15rem 0.5rem; border-radius: 10px;
+  font-size: 0.7rem; font-weight: 600;
+}
+
+/* Typing dots */
+.typing-dots { display: flex; gap: 4px; align-items: center; padding: 0.2rem 0; }
+.typing-dots span {
+  width: 7px; height: 7px; border-radius: 50%;
+  background: var(--text-lighter);
+  animation: typingBounce 0.9s infinite;
+}
+.typing-dots span:nth-child(2) { animation-delay: 0.15s; }
+.typing-dots span:nth-child(3) { animation-delay: 0.30s; }
+@keyframes typingBounce {
+  0%,60%,100% { transform: translateY(0); }
+  30%         { transform: translateY(-5px); }
+}
+
+/* Input bar */
+.chat-input-bar {
+  background: white;
+  border-top: 1px solid var(--border);
+  padding: 1rem 1.25rem;
+  display: flex;
+  gap: 0.75rem;
+  align-items: flex-end;
+  flex-shrink: 0;
+}
+.chat-input-bar textarea {
+  flex: 1;
+  padding: 0.75rem 1rem;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  font-family: 'Inter', sans-serif;
+  font-size: 0.9rem;
+  color: var(--text);
+  resize: none;
+  outline: none;
+  max-height: 110px;
+  min-height: 44px;
+  line-height: 1.5;
+  transition: border-color 0.2s;
+  background: var(--bg-light);
+}
+.chat-input-bar textarea:focus {
+  border-color: var(--primary);
+  background: white;
+  box-shadow: 0 0 0 3px rgba(37,99,235,0.08);
+}
+.chat-input-bar textarea::placeholder { color: var(--text-lighter); }
+
+#sendBtn {
+  width: 44px; height: 44px;
+  background: var(--primary);
+  border: none; border-radius: 10px;
+  color: white; cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0; transition: all 0.2s;
+  font-size: 1.1rem;
+}
+#sendBtn:hover:not(:disabled) {
+  background: var(--primary-dark);
+  transform: scale(1.05);
+}
+#sendBtn:disabled {
+  background: var(--border);
+  cursor: not-allowed; transform: none;
+}
+.input-hint {
+  font-size: 0.72rem; color: var(--text-lighter);
+  text-align: center; padding: 0.35rem 0;
+  flex-shrink: 0;
+}
+
+/* Floating Ask LeemAI button (shown on other pages) */
+.leemai-fab {
+  position: fixed;
+  bottom: 24px; right: 24px;
+  background: linear-gradient(135deg, #2563eb, #1e40af);
+  color: white;
+  padding: 0.75rem 1.25rem;
+  border-radius: 50px;
+  box-shadow: 0 4px 20px rgba(37,99,235,0.4);
+  font-weight: 600; font-size: 0.9rem;
+  display: flex; align-items: center; gap: 0.5rem;
+  cursor: pointer; text-decoration: none;
+  transition: all 0.2s;
+  z-index: 90;
+  border: none; font-family: inherit;
+}
+.leemai-fab:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 28px rgba(37,99,235,0.5);
+  color: white;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .leemai-page { height: auto; min-height: calc(100vh - 71px); }
+  .chat-layout { flex-direction: column; }
+  .chat-sidebar {
+    width: 100%; border-right: none;
+    border-bottom: 1px solid var(--border);
+    max-height: 0; overflow: hidden;
+    transition: max-height 0.3s ease;
+  }
+  .chat-sidebar.open { max-height: 320px; }
+  .sidebar-toggle-btn {
+    display: flex !important;
+  }
+  .leemai-banner h1 { font-size: 1.3rem; }
+  #chatMessages { padding: 1rem; }
+  .msg-row { max-width: 100%; }
+  .chat-input-bar { padding: 0.75rem 1rem; }
+}
+@media (min-width: 769px) {
+  .sidebar-toggle-btn { display: none !important; }
+}
+</style>
+</head>
+
+<body>
+
+<!-- ── Header (exact copy from home.html) ── -->
+<header class="header">
+  <div class="container">
+    <div class="header-content">
+      <div class="logo">
+        <a href="/" style="display:flex;align-items:center;gap:.5rem;">
+          <img src="/logo.png" alt="StudyLeem Logo" style="height:50px;">
+          <div class="logo-text"><span style="color:#2563eb;">Study</span><span style="color:#f97316;" class="logo-leem">Leem</span></div>
+        </a>
+      </div>
+      <nav class="nav" id="mainNav" aria-label="Main navigation">
+        <a href="/" class="nav-link">Home</a>
+        <a href="/fbise" class="nav-link">FBISE</a>
+        <a href="/#classes" class="nav-link">Classes</a>
+        <a href="/leemai" class="nav-link active">LeemAI</a>
+        <a href="/about" class="nav-link">About</a>
+        <a href="/contact" class="nav-link">Contact</a>
+      </nav>
+      <button class="mobile-menu-btn" id="mobileMenuBtn" aria-label="Open menu">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </div>
+</header>
+
+<!-- ── Mobile Menu (exact copy + LeemAI added) ── -->
+<div class="mobile-menu" id="mobileMenu" role="navigation" aria-label="Mobile navigation">
+  <a href="/" class="mobile-nav-link">🏠 Home</a>
+  <a href="/fbise" class="mobile-nav-link">📚 FBISE</a>
+  <a href="/fbise/notes/9" class="mobile-nav-link">· Class 9 Notes</a>
+  <a href="/fbise/notes/10" class="mobile-nav-link">· Class 10 Notes</a>
+  <a href="/fbise/notes/11" class="mobile-nav-link">· Class 11 Notes</a>
+  <a href="/fbise/notes/12" class="mobile-nav-link">· Class 12 Notes</a>
+  <a href="/fbise/books/9" class="mobile-nav-link">· Class 9 Books</a>
+  <a href="/fbise/books/10" class="mobile-nav-link">· Class 10 Books</a>
+  <a href="/fbise/books/11" class="mobile-nav-link">· Class 11 Books</a>
+  <a href="/fbise/books/12" class="mobile-nav-link">· Class 12 Books</a>
+  <a href="/leemai" class="mobile-nav-link active">🤖 LeemAI</a>
+  <a href="/about" class="mobile-nav-link">ℹ️ About</a>
+  <a href="/contact" class="mobile-nav-link">✉️ Contact</a>
+  <a href="/privacy" class="mobile-nav-link">🔒 Privacy Policy</a>
+  <a href="/terms" class="mobile-nav-link">📋 Terms of Use</a>
+</div>
+
+<!-- ── LeemAI Page ── -->
+<div class="main-content leemai-page">
+
+  <!-- Banner -->
+  <div class="leemai-banner">
+    <h1>🤖 LeemAI — FBISE Study Assistant</h1>
+    <p>Ask any question from your FBISE syllabus and get an instant answer</p>
+    <div class="leemai-banner-badges">
+      <span class="leemai-badge">📚 Classes 9–12</span>
+      <span class="leemai-badge">🇵🇰 FBISE Federal Board</span>
+      <span class="leemai-badge">⚡ Instant Answers</span>
+      <span class="leemai-badge">🆓 100% Free</span>
+    </div>
+  </div>
+
+  <!-- Mobile sidebar toggle -->
+  <div style="padding:0.6rem 1rem;background:white;border-bottom:1px solid var(--border);display:none;" id="sidebarToggleBar">
+    <button class="sidebar-toggle-btn btn btn-secondary btn-sm" id="sidebarToggle" style="display:flex;gap:0.4rem;align-items:center;">
+      <span>📖</span> Browse Topics
+    </button>
+  </div>
+
+  <div class="chat-layout">
+
+    <!-- Sidebar -->
+    <div class="chat-sidebar" id="chatSidebar">
+
+      <div class="sidebar-section">
+        <div class="sidebar-label">Subject Filter</div>
+        <button class="subject-chip active" data-subject="all">
+          <span class="chip-icon">📚</span> All Subjects
+        </button>
+        <button class="subject-chip" data-subject="chemistry">
+          <span class="chip-icon">🧪</span> Chemistry
+        </button>
+        <button class="subject-chip" data-subject="physics">
+          <span class="chip-icon">⚡</span> Physics
+        </button>
+        <button class="subject-chip" data-subject="biology">
+          <span class="chip-icon">🌿</span> Biology
+        </button>
+        <button class="subject-chip" data-subject="mathematics">
+          <span class="chip-icon">📐</span> Mathematics
+        </button>
+        <button class="subject-chip" data-subject="computer">
+          <span class="chip-icon">💻</span> Computer
+        </button>
+      </div>
+
+      <div class="sidebar-section">
+        <div class="sidebar-label">Quick Questions</div>
+        <div class="quick-qs" id="quickQs">
+          <button class="quick-q" onclick="sendQuick(this)">What is chemical equilibrium?</button>
+          <button class="quick-q" onclick="sendQuick(this)">Define buffer solution</button>
+          <button class="quick-q" onclick="sendQuick(this)">What is the common ion effect?</button>
+          <button class="quick-q" onclick="sendQuick(this)">Explain acid dissociation</button>
+          <button class="quick-q" onclick="sendQuick(this)">Types of chemical reactions</button>
+          <button class="quick-q" onclick="sendQuick(this)">What is Le Chatelier's principle?</button>
+        </div>
+      </div>
+
+      <div class="sidebar-section">
+        <div class="sidebar-label">Tips</div>
+        <p style="font-size:0.78rem;color:var(--text-light);line-height:1.6;">
+          💡 Ask specific questions like <em>"Define osmosis"</em> or <em>"Explain Newton's laws"</em> for best results.
+        </p>
+      </div>
+
+    </div>
+
+    <!-- Main chat -->
+    <div class="chat-main">
+
+      <div id="chatMessages">
+        <!-- Welcome state -->
+        <div class="welcome-state" id="welcomeState">
+          <div class="welcome-icon-wrap">🤖</div>
+          <h2>Hello! I'm LeemAI</h2>
+          <p>Your personal FBISE study assistant. Ask me anything from your Class 9–12 Federal Board syllabus.</p>
+          <div class="welcome-chips">
+            <button class="welcome-chip" onclick="sendQuick(this)">What is chemical equilibrium?</button>
+            <button class="welcome-chip" onclick="sendQuick(this)">Define buffer solution</button>
+            <button class="welcome-chip" onclick="sendQuick(this)">Common ion effect</button>
+            <button class="welcome-chip" onclick="sendQuick(this)">Types of chemical reactions</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Input bar -->
+      <div class="chat-input-bar">
+        <textarea
+          id="chatInput"
+          placeholder="Ask your FBISE question here… (e.g. What is chemical equilibrium?)"
+          rows="1"
+          aria-label="Ask LeemAI"
+        ></textarea>
+        <button id="sendBtn" onclick="sendMessage()" aria-label="Send">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="22" y1="2" x2="11" y2="13"></line>
+            <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+          </svg>
+        </button>
+      </div>
+      <div class="input-hint">Press Enter to send · Shift+Enter for new line</div>
+
+    </div>
+  </div>
+</div>
+
+<!-- ── Footer (exact copy from home.html) ── -->
+<footer class="footer">
+  <div class="footer-inner">
+    <div class="container">
+      <div class="footer-content">
+        <div class="footer-brand">
+          <div class="footer-logo">
+            <span class="footer-logo-study">Study</span><span class="footer-logo-leem">Leem</span>
+          </div>
+          <p class="footer-tagline">Free FBISE study materials for Federal Board Pakistan students — 100% free, no registration required.</p>
+          <div class="footer-badges">
+            <span class="footer-badge">📚 FBISE</span>
+            <span class="footer-badge">🇵🇰 Pakistan</span>
+            <span class="footer-badge">✅ Free</span>
+          </div>
+        </div>
+        <div class="footer-col">
+          <h4 class="footer-col-title">📝 Notes</h4>
+          <ul class="footer-list">
+            <li><a href="/fbise/notes/9">Class 9 Notes</a></li>
+            <li><a href="/fbise/notes/10">Class 10 Notes</a></li>
+            <li><a href="/fbise/notes/11">Class 11 Notes</a></li>
+            <li><a href="/fbise/notes/12">Class 12 Notes</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h4 class="footer-col-title">📚 Books</h4>
+          <ul class="footer-list">
+            <li><a href="/fbise/books/9">Class 9 Books</a></li>
+            <li><a href="/fbise/books/10">Class 10 Books</a></li>
+            <li><a href="/fbise/books/11">Class 11 Books</a></li>
+            <li><a href="/fbise/books/12">Class 12 Books</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h4 class="footer-col-title">🔗 Links</h4>
+          <ul class="footer-list">
+            <li><a href="/">Home</a></li>
+            <li><a href="/fbise">FBISE Hub</a></li>
+            <li><a href="/leemai">LeemAI</a></li>
+            <li><a href="/about">About Us</a></li>
+            <li><a href="/contact">Contact</a></li>
+            <li><a href="/privacy">Privacy Policy</a></li>
+            <li><a href="/terms">Terms of Use</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <div class="footer-bottom-left">
+          <p>&copy; 2026 StudyLeem. All rights reserved. Free FBISE Study Materials for Federal Board Pakistan.</p>
+        </div>
+        <div class="footer-bottom-right">
+          <a href="/privacy">Privacy</a>
+          <span>·</span>
+          <a href="/terms">Terms</a>
+          <span>·</span>
+          <a href="/contact">Contact</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script>
+// ── CONFIG ────────────────────────────────────────────────────────────────────
+const LEEMAI_API = "https://leemai-production.up.railway.app";
+// Warmup: start loading model as soon as page opens
+fetch(LEEMAI_API + '/api/warmup').catch(() => {});
+
+// ── Mobile sidebar toggle ─────────────────────────────────────────────────────
+const sidebarToggleBar = document.getElementById('sidebarToggleBar');
+const sidebarToggle    = document.getElementById('sidebarToggle');
+const chatSidebar      = document.getElementById('chatSidebar');
+
+if (window.innerWidth <= 768) {
+  sidebarToggleBar.style.display = 'block';
+}
+window.addEventListener('resize', () => {
+  sidebarToggleBar.style.display = window.innerWidth <= 768 ? 'block' : 'none';
+});
+sidebarToggle && sidebarToggle.addEventListener('click', () => {
+  chatSidebar.classList.toggle('open');
+});
+
+// ── Subject chips ─────────────────────────────────────────────────────────────
+document.querySelectorAll('.subject-chip').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.subject-chip').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+  });
+});
+
+// ── Textarea auto-resize + Enter to send ──────────────────────────────────────
+const chatInput = document.getElementById('chatInput');
+chatInput.addEventListener('input', () => {
+  chatInput.style.height = 'auto';
+  chatInput.style.height = Math.min(chatInput.scrollHeight, 110) + 'px';
+});
+chatInput.addEventListener('keydown', e => {
+  if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendMessage(); }
+});
+
+// ── Quick questions ───────────────────────────────────────────────────────────
+function sendQuick(btn) {
+  chatInput.value = btn.textContent.trim();
+  sendMessage();
+}
+
+// ── Main send function ────────────────────────────────────────────────────────
+async function sendMessage() {
+  const query = chatInput.value.trim();
+  if (!query) return;
+
+  const sendBtn = document.getElementById('sendBtn');
+
+  // Remove welcome state
+  const welcome = document.getElementById('welcomeState');
+  if (welcome) welcome.remove();
+
+  chatInput.value = '';
+  chatInput.style.height = 'auto';
+  sendBtn.disabled = true;
+
+  appendMessage('user', query);
+  const typingId = appendTyping();
+
+  try {
+    const res = await fetch(LEEMAI_API + '/api/ask', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ question: query, top_k: 4 })
+    });
+
+    const data = await res.json();
+    removeTyping(typingId);
+
+    if (!res.ok) {
+      appendMessage('ai', '⚠️ ' + (data.detail || 'Something went wrong. Please try again.'));
+    } else if (data.fallback && !data.model_ready) {
+      appendMessage('ai', '⏳ LeemAI is still waking up (first load takes ~30s). ' + data.answer);
+    } else {
+      // confidence is 0–1 from backend, convert to 0–100
+      const confPct = data.confidence ? Math.round(data.confidence * 100) : 0;
+      appendMessage('ai', data.answer, confPct, data.confidence_label);
+    }
+
+  } catch (err) {
+    removeTyping(typingId);
+    appendMessage('ai', '⚠️ Could not connect to LeemAI. Please check your internet connection and try again.');
+  }
+
+  sendBtn.disabled = false;
+  chatInput.focus();
+}
+
+// ── Append message ────────────────────────────────────────────────────────────
+function appendMessage(role, text, confidence, topic) {
+  const messages = document.getElementById('chatMessages');
+  const row = document.createElement('div');
+  row.className = `msg-row ${role}`;
+
+  const avatar = role === 'user'
+    ? `<div class="msg-avatar">U</div>`
+    : `<div class="msg-avatar">🤖</div>`;
+
+  const bubbleContent = role === 'ai' ? formatText(text) : escHtml(text);
+
+  let meta = '';
+  if (role === 'ai') {
+    const confPct = confidence || 0;
+    if (confPct > 0 || topic) {
+      meta = `<div class="conf-row">`;
+      if (topic) meta += `<span class="topic-tag">${escHtml(topic)}</span>`;
+      if (confPct > 0) meta += `
+        <div class="conf-bar"><div class="conf-fill" style="width:${confPct}%"></div></div>
+        <span>${confPct}% match</span>`;
+      meta += `</div>`;
+    }
+  }
+
+  row.innerHTML = `
+    ${avatar}
+    <div class="msg-content">
+      <div class="msg-bubble">${bubbleContent}${meta}</div>
+    </div>`;
+
+  messages.appendChild(row);
+  messages.scrollTop = messages.scrollHeight;
+}
+
+// ── Typing indicator ──────────────────────────────────────────────────────────
+function appendTyping() {
+  const messages = document.getElementById('chatMessages');
+  const id = 'typing-' + Date.now();
+  const row = document.createElement('div');
+  row.className = 'msg-row ai';
+  row.id = id;
+  row.innerHTML = `
+    <div class="msg-avatar">🤖</div>
+    <div class="msg-content">
+      <div class="msg-bubble">
+        <div class="typing-dots"><span></span><span></span><span></span></div>
+      </div>
+    </div>`;
+  messages.appendChild(row);
+  messages.scrollTop = messages.scrollHeight;
+  return id;
+}
+function removeTyping(id) {
+  const el = document.getElementById(id);
+  if (el) el.remove();
+}
+
+// ── Format AI response (simple markdown) ─────────────────────────────────────
+function formatText(text) {
+  let t = escHtml(text);
+  t = t.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
+  t = t.replace(/_(.+?)_/g, '<em>$1</em>');
+  t = t.replace(/^• (.+)$/gm, '<li>$1</li>');
+  t = t.replace(/(<li>[\s\S]*?<\/li>)/g, '<ul>$1</ul>');
+  t = t.replace(/<\/ul>\s*<ul>/g, '');
+  t = t.replace(/\n\n/g, '</p><p>');
+  t = t.replace(/\n/g, '<br>');
+  if (!t.startsWith('<')) t = '<p>' + t;
+  if (!t.endsWith('>')) t = t + '</p>';
+  return t;
+}
+function escHtml(s) {
+  return (s || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+
+// ── Mobile menu (same as home.html — main.js handles it too) ─────────────────
+const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+const mobileMenu    = document.getElementById('mobileMenu');
+mobileMenuBtn && mobileMenuBtn.addEventListener('click', () => {
+  mobileMenu.classList.toggle('active');
+});
+</script>
+
+<script>window.va=window.va||function(){(window.vaq=window.vaq||[]).push(arguments);};</script>
+<script defer src="/_vercel/insights/script.js"></script>
+</body>
+</html>

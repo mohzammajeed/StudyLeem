@@ -1,0 +1,469 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PDF Watermark Remover</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pako/2.1.0/pako.min.js"></script>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Segoe UI',sans-serif;background:#0f1117;color:#e2e8f0;min-height:100vh;display:flex;align-items:center;justify-content:center;padding:30px 16px}
+.card{background:#1a1d27;border:1px solid #2d3148;border-radius:16px;width:100%;max-width:600px;padding:32px;box-shadow:0 24px 60px rgba(0,0,0,.5)}
+h1{font-size:1.6rem;font-weight:800;margin-bottom:4px;background:linear-gradient(135deg,#818cf8,#c084fc);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.sub{font-size:.75rem;color:#64748b;margin-bottom:24px}
+.dz{border:2px dashed #2d3148;border-radius:12px;padding:38px 20px;text-align:center;cursor:pointer;position:relative;transition:all .2s;background:#12151f}
+.dz:hover,.dz.over{border-color:#818cf8;background:#1a1d2f}
+.dz input{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%}
+.dz-icon{font-size:2.5rem;margin-bottom:8px}
+.dz h3{font-size:1rem;margin-bottom:3px;color:#cbd5e1}
+.dz p{font-size:.72rem;color:#475569}
+.fbadge{display:none;align-items:center;gap:10px;margin-top:10px;padding:10px 14px;background:#0f3020;border:1px solid #16a34a;border-radius:9px}
+.fbadge.show{display:flex}
+.fn{flex:1;font-weight:700;color:#4ade80;font-size:.8rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.fs{color:#6b7280;font-size:.7rem;white-space:nowrap}
+.fx{background:none;border:none;color:#6b7280;cursor:pointer;font-size:1.1rem}
+.fx:hover{color:#f87171}
+.box{margin-top:16px;background:#12151f;border:1px solid #2d3148;border-radius:10px;padding:16px}
+.box-t{font-size:.65rem;text-transform:uppercase;letter-spacing:.12em;color:#475569;margin-bottom:12px}
+.field{margin-bottom:12px}
+.field:last-child{margin-bottom:0}
+.field label{display:block;font-size:.7rem;color:#94a3b8;margin-bottom:4px}
+.field input[type=text]{width:100%;background:#0f1117;border:1px solid #2d3148;border-radius:7px;padding:7px 11px;color:#e2e8f0;font-family:'Courier New',monospace;font-size:.76rem;outline:none;transition:border-color .15s}
+.field input[type=text]:focus{border-color:#818cf8}
+.hint{font-size:.63rem;color:#475569;margin-top:3px;line-height:1.5}
+.r2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.btn{margin-top:16px;width:100%;padding:14px;background:linear-gradient(135deg,#6366f1,#8b5cf6);border:none;border-radius:10px;color:#fff;font-size:1rem;font-weight:700;cursor:pointer;transition:opacity .15s,transform .1s;letter-spacing:.03em}
+.btn:hover:not(:disabled){opacity:.9;transform:translateY(-1px)}
+.btn:disabled{opacity:.35;cursor:not-allowed;transform:none}
+.lw{display:none;margin-top:14px;background:#080a10;border:1px solid #1e2235;border-radius:10px;overflow:hidden}
+.lw.show{display:block}
+.lbar{background:#12151f;padding:7px 13px;font-size:.63rem;color:#475569;text-transform:uppercase;letter-spacing:.1em;display:flex;align-items:center;gap:7px}
+.dot{width:7px;height:7px;background:#818cf8;border-radius:50%;animation:pu 1.2s infinite}
+@keyframes pu{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.4;transform:scale(.8)}}
+.pbar{height:3px;background:#1e2235}
+.pfill{height:100%;width:0;background:linear-gradient(90deg,#6366f1,#8b5cf6);transition:width .3s}
+.lb{padding:10px 13px;font-family:'Courier New',monospace;font-size:.69rem;line-height:1.9;max-height:200px;overflow-y:auto}
+.lg{color:#94a3b8}.lok{color:#4ade80}.lw2{color:#fbbf24}.le{color:#f87171}
+.res{display:none;margin-top:12px;padding:18px;background:#0a2012;border:1px solid #16a34a;border-radius:10px;text-align:center}
+.res.show{display:block}
+.res h3{color:#4ade80;font-size:1.1rem;margin-bottom:4px}
+.res p{font-size:.72rem;color:#6b7280;margin-bottom:16px}
+.dl{display:inline-flex;align-items:center;gap:8px;padding:10px 24px;background:#16a34a;color:#fff;border-radius:8px;text-decoration:none;font-weight:700;font-size:.88rem}
+.dl:hover{background:#15803d}
+.sts{display:flex;justify-content:center;gap:20px;margin-top:14px;flex-wrap:wrap}
+.st{text-align:center}
+.sn{font-size:1.5rem;font-weight:800;color:#818cf8;line-height:1}
+.sl{font-size:.6rem;color:#475569;text-transform:uppercase;letter-spacing:.08em;margin-top:2px}
+.info{margin-top:14px;padding:10px 13px;background:#1c1200;border:1px solid #92400e;border-radius:8px;font-size:.67rem;color:#fbbf24;line-height:1.7}
+code{background:#0f1117;padding:1px 5px;border-radius:3px;font-size:.64rem;font-family:'Courier New',monospace}
+</style>
+</head>
+<body>
+<div class="card">
+  <h1>🧹 PDF Watermark Remover</h1>
+  <p class="sub">Removes diagonal text watermarks from compressed PDFs · 100% offline · Nothing uploaded</p>
+
+  <div class="dz" id="dz">
+    <input type="file" id="fi" accept=".pdf">
+    <div class="dz-icon">📄</div>
+    <h3>Drop PDF here or click to browse</h3>
+    <p>Handles FlateDecode compressed streams</p>
+  </div>
+  <div class="fbadge" id="fb">
+    <span>📋</span>
+    <span class="fn" id="fn">—</span>
+    <span class="fs" id="fs">—</span>
+    <button class="fx" id="fx">✕</button>
+  </div>
+
+  <div class="box">
+    <div class="box-t">⚙ Detection Settings — Pre-filled for studyplusplus.com</div>
+
+    <div class="field">
+      <label>Watermark color signature — <code>R G B rg</code> (0–1 scale)</label>
+      <input type="text" id="col" value="0.188232 0.490234 0.804688">
+      <div class="hint">The blue color used by studyplusplus watermark. This is the most reliable way to target it. Leave blank to use angle-only mode.</div>
+    </div>
+
+    <div class="field">
+      <label>Watermark Tm matrix (first 4 values: a b c d)</label>
+      <input type="text" id="mat" value="0.707107 -0.707107 0.707107 0.707107">
+      <div class="hint">45° rotation matrix from your PDF. Used as secondary confirmation. Leave blank to skip.</div>
+    </div>
+
+    <div class="field r2">
+      <div>
+        <label>Angle fallback min (°)</label>
+        <input type="text" id="amin" value="30">
+      </div>
+      <div>
+        <label>Angle fallback max (°)</label>
+        <input type="text" id="amax" value="60">
+      </div>
+    </div>
+    <div class="hint" style="margin-top:-6px">Only used when matrix field is blank — removes any diagonal text in this range.</div>
+  </div>
+
+  <button class="btn" id="btn" disabled>⚙ Remove Watermarks</button>
+
+  <div class="lw" id="lw">
+    <div class="lbar"><div class="dot" id="dot"></div>Processing</div>
+    <div class="pbar"><div class="pfill" id="pf"></div></div>
+    <div class="lb" id="lb"></div>
+  </div>
+
+  <div class="res" id="res">
+    <h3>✓ Watermarks Removed!</h3>
+    <p id="rd"></p>
+    <a class="dl" id="dlbtn" href="#" download="cleaned.pdf">⬇ Download Cleaned PDF</a>
+    <div class="sts" id="sts"></div>
+  </div>
+
+  <div class="info">
+    ⚡ <strong>Method:</strong> Reads raw PDF bytes → finds every <code>FlateDecode</code> stream → decompresses with <strong>pako</strong> (zlib) → finds lines containing the watermark color <code>rg</code> → removes the entire surrounding <code>q...Q</code> graphics block → recompresses → updates <code>/Length</code> in the stream dict → outputs valid PDF. No external server. Works offline after first page load.
+  </div>
+</div>
+
+<script>
+// ── Helpers: latin1 encode/decode for binary-safe PDF handling
+function latin1Decode(bytes) {
+  let s = '', chunk = 8192;
+  for (let i = 0; i < bytes.length; i += chunk)
+    s += String.fromCharCode(...bytes.subarray(i, i + chunk));
+  return s;
+}
+function latin1Encode(str) {
+  const b = new Uint8Array(str.length);
+  for (let i = 0; i < str.length; i++) b[i] = str.charCodeAt(i) & 0xff;
+  return b;
+}
+
+// ── Uint8Array search helpers
+function u8indexOf(hay, needle, from = 0) {
+  outer: for (let i = from; i <= hay.length - needle.length; i++) {
+    for (let j = 0; j < needle.length; j++)
+      if (hay[i + j] !== needle[j]) continue outer;
+    return i;
+  }
+  return -1;
+}
+function u8lastIndexOf(hay, needle, before) {
+  outer: for (let i = Math.min(before, hay.length - needle.length); i >= 0; i--) {
+    for (let j = 0; j < needle.length; j++)
+      if (hay[i + j] !== needle[j]) continue outer;
+    return i;
+  }
+  return -1;
+}
+
+// ── Check if a Tm line has a matching matrix
+function tmMatches(line, targetMat, amin, amax) {
+  const m = line.match(/([-\d.]+)\s+([-\d.]+)\s+([-\d.]+)\s+([-\d.]+)\s+([-\d.]+)\s+([-\d.]+)\s+Tm/);
+  if (!m) return false;
+  const a = +m[1], b = +m[2], c = +m[3], d = +m[4];
+  if (targetMat.length >= 4) {
+    const tol = 0.001;
+    if (Math.abs(a - targetMat[0]) < tol && Math.abs(b - targetMat[1]) < tol &&
+        Math.abs(c - targetMat[2]) < tol && Math.abs(d - targetMat[3]) < tol) return true;
+  }
+  if (amin > 0) {
+    const angle = Math.abs(Math.atan2(b, a) * 180 / Math.PI) % 180;
+    if (angle >= amin && angle <= amax) return true;
+  }
+  return false;
+}
+
+// ── Clean one decompressed stream
+// Strategy: when we see the watermark color line (R G B rg),
+// remove it and the q...Q block that immediately follows
+function cleanStream(text, targetCol, targetMat, amin, amax) {
+  const lines = text.split('\n');
+  const out = [];
+  let removed = 0, i = 0;
+
+  // Build color detection string
+  const colStr = targetCol.length === 3
+    ? targetCol.map(v => v.toString()).join(' ')
+    : null;
+
+  while (i < lines.length) {
+    const line = lines[i];
+
+    // Detect watermark color line
+    let isWmColor = false;
+    if (colStr) {
+      // Check approximate match (avoid float precision issues)
+      const rgMatch = line.match(/([\d.]+)\s+([\d.]+)\s+([\d.]+)\s+rg/);
+      if (rgMatch) {
+        isWmColor =
+          Math.abs(+rgMatch[1] - targetCol[0]) < 0.01 &&
+          Math.abs(+rgMatch[2] - targetCol[1]) < 0.01 &&
+          Math.abs(+rgMatch[3] - targetCol[2]) < 0.01;
+      }
+    }
+
+    if (isWmColor) {
+      // Skip this color line, then skip the q...Q block that follows
+      i++; // skip color line
+      // Skip any standalone ops between color and q (e.g. /R16 gs lines)
+      while (i < lines.length && lines[i].trim() !== 'q' && !lines[i].trim().startsWith('q ')) {
+        // keep non-q lines (they may be needed for state)
+        // Actually for safety, skip everything until next q or end
+        if (lines[i].trim() === '') { i++; continue; }
+        // If it's a gs operator or similar, skip
+        i++;
+      }
+      // Now consume the q...Q block
+      if (i < lines.length) {
+        let depth = 0;
+        while (i < lines.length) {
+          const l = lines[i].trim();
+          if (l === 'q' || l.startsWith('q ')) depth++;
+          if (l === 'Q') {
+            depth--;
+            if (depth <= 0) { i++; break; }
+          }
+          i++;
+        }
+      }
+      removed++;
+      continue;
+    }
+
+    out.push(line);
+    i++;
+  }
+
+  return { cleaned: out.join('\n'), removed };
+}
+
+// ── Main PDF patcher — works directly on raw bytes
+async function patchPDF(pdfBytes, targetCol, targetMat, amin, amax) {
+  const enc = new TextEncoder();
+  const STREAM_NL    = enc.encode('stream\n');
+  const STREAM_CRNL  = enc.encode('stream\r\n');
+  const ENDSTREAM    = enc.encode('endstream');
+  const FLATE        = enc.encode('FlateDecode');
+  const LENGTH_KEY   = enc.encode('/Length');
+
+  let data         = pdfBytes; // Uint8Array, rebuilt each patch
+  let totalRemoved = 0;
+  let streamsHit   = 0;
+  let pos          = 0;
+
+  // We collect all patches first, then apply from end→start to preserve offsets
+  const patches = []; // {start, end, newBytes}
+
+  while (pos < data.length) {
+    // Find next stream marker
+    let sPos = u8indexOf(data, STREAM_NL, pos);
+    let sPos2 = u8indexOf(data, STREAM_CRNL, pos);
+    let markerLen, streamPos;
+
+    if (sPos === -1 && sPos2 === -1) break;
+    if (sPos === -1 || (sPos2 !== -1 && sPos2 < sPos)) {
+      streamPos = sPos2; markerLen = STREAM_CRNL.length;
+    } else {
+      streamPos = sPos; markerLen = STREAM_NL.length;
+    }
+
+    const contentStart = streamPos + markerLen;
+    const endPos       = u8indexOf(data, ENDSTREAM, contentStart);
+    if (endPos === -1) { pos = contentStart; continue; }
+
+    // Find dict before this stream
+    const dictStart = u8lastIndexOf(data, enc.encode('<<'), streamPos);
+    if (dictStart === -1) { pos = contentStart; continue; }
+    const dictBytes = data.slice(dictStart, streamPos);
+
+    // Must be FlateDecode
+    if (u8indexOf(dictBytes, FLATE, 0) === -1) { pos = contentStart; continue; }
+
+    // Extract raw compressed bytes (trim trailing \r\n)
+    let rawEnd = endPos;
+    while (rawEnd > contentStart && (data[rawEnd-1] === 10 || data[rawEnd-1] === 13)) rawEnd--;
+    const compressed = data.slice(contentStart, rawEnd);
+
+    // Decompress
+    let dec;
+    try { dec = pako.inflate(compressed); }
+    catch (e) { pos = contentStart; continue; }
+
+    const text   = latin1Decode(dec);
+    const result = cleanStream(text, targetCol, targetMat, amin, amax);
+
+    if (result.removed > 0) {
+      totalRemoved += result.removed;
+      streamsHit++;
+
+      // Recompress
+      const cleanedBytes = latin1Encode(result.cleaned);
+      const recompressed = pako.deflate(cleanedBytes, { level: 6 });
+
+      // Patch /Length in dict
+      const dictStr    = latin1Decode(dictBytes);
+      const newDictStr = dictStr.replace(/\/Length\s+\d+/, '/Length ' + recompressed.length);
+      const newDict    = latin1Encode(newDictStr);
+
+      // Build replacement block: newDict + stream\n + recompressed + \nendstream
+      const streamMarker = markerLen === STREAM_NL.length ? enc.encode('stream\n') : enc.encode('stream\r\n');
+      const nl           = enc.encode('\n');
+
+      const newBlock = new Uint8Array(
+        newDict.length + streamMarker.length + recompressed.length + nl.length + ENDSTREAM.length
+      );
+      let off = 0;
+      newBlock.set(newDict,       off); off += newDict.length;
+      newBlock.set(streamMarker,  off); off += streamMarker.length;
+      newBlock.set(recompressed,  off); off += recompressed.length;
+      newBlock.set(nl,            off); off += nl.length;
+      newBlock.set(ENDSTREAM,     off);
+
+      // Record patch: replace from dictStart to endPos+ENDSTREAM.length
+      const patchEnd = endPos + ENDSTREAM.length;
+      patches.push({ start: dictStart, end: patchEnd, newBytes: newBlock });
+
+      pos = patchEnd;
+    } else {
+      pos = contentStart;
+    }
+  }
+
+  // Apply patches from end → start so offsets stay valid
+  patches.sort((a, b) => b.start - a.start);
+  let resultArr = [data];
+
+  for (const p of patches) {
+    const current = resultArr[0];
+    const before  = current.slice(0, p.start);
+    const after   = current.slice(p.end);
+    const merged  = new Uint8Array(before.length + p.newBytes.length + after.length);
+    merged.set(before, 0);
+    merged.set(p.newBytes, before.length);
+    merged.set(after, before.length + p.newBytes.length);
+    resultArr = [merged];
+  }
+
+  return { patched: resultArr[0], totalRemoved, streamsHit };
+}
+
+// ══════════════════════════════════════════════════════
+// UI LOGIC
+// ══════════════════════════════════════════════════════
+let pdfFile = null;
+const dz    = document.getElementById('dz');
+const fi    = document.getElementById('fi');
+const fb    = document.getElementById('fb');
+const btn   = document.getElementById('btn');
+const lw    = document.getElementById('lw');
+const lb    = document.getElementById('lb');
+const dot   = document.getElementById('dot');
+const pf    = document.getElementById('pf');
+const res   = document.getElementById('res');
+
+dz.addEventListener('dragover', e => { e.preventDefault(); dz.classList.add('over'); });
+dz.addEventListener('dragleave', () => dz.classList.remove('over'));
+dz.addEventListener('drop', e => {
+  e.preventDefault(); dz.classList.remove('over');
+  const f = e.dataTransfer.files[0];
+  if (f && f.name.toLowerCase().endsWith('.pdf')) load(f);
+  else alert('Drop a PDF file.');
+});
+fi.addEventListener('change', () => fi.files[0] && load(fi.files[0]));
+
+function load(f) {
+  pdfFile = f;
+  document.getElementById('fn').textContent = f.name;
+  document.getElementById('fs').textContent = (f.size / 1024 / 1024).toFixed(2) + ' MB';
+  fb.classList.add('show');
+  btn.disabled = false;
+  res.classList.remove('show');
+  lw.classList.remove('show');
+  lb.innerHTML = '';
+}
+document.getElementById('fx').addEventListener('click', () => {
+  pdfFile = null; fi.value = '';
+  fb.classList.remove('show'); btn.disabled = true;
+});
+
+function log(msg, cls = 'lg') {
+  const d = document.createElement('div');
+  d.className = cls; d.textContent = msg;
+  lb.appendChild(d); lb.scrollTop = lb.scrollHeight;
+}
+function prog(p) { pf.style.width = p + '%'; }
+
+btn.addEventListener('click', async () => {
+  if (!pdfFile) return;
+
+  lw.classList.add('show');
+  res.classList.remove('show');
+  lb.innerHTML = '';
+  prog(0);
+  btn.disabled = true;
+  dot.style.animation = 'pu 1.2s infinite';
+  dot.style.background = '#818cf8';
+
+  try {
+    const colStr = document.getElementById('col').value.trim();
+    const matStr = document.getElementById('mat').value.trim();
+    const amin   = parseFloat(document.getElementById('amin').value) || 0;
+    const amax   = parseFloat(document.getElementById('amax').value) || 0;
+
+    const targetCol = colStr ? colStr.split(/\s+/).map(Number) : [];
+    const targetMat = matStr ? matStr.split(/\s+/).map(Number) : [];
+
+    log('📂 Reading file...');
+    const ab       = await pdfFile.arrayBuffer();
+    const pdfBytes = new Uint8Array(ab);
+    log('📄 Size: ' + (pdfBytes.length / 1024 / 1024).toFixed(2) + ' MB', 'lok');
+    prog(15);
+
+    log('🔍 Scanning streams and removing watermarks...');
+    const { patched, totalRemoved, streamsHit } = await patchPDF(
+      pdfBytes, targetCol, targetMat, amin, amax
+    );
+    prog(92);
+
+    if (totalRemoved === 0) {
+      log('⚠ No watermark found. Check settings:', 'lw2');
+      log('  • Is the color value correct for your PDF?', 'lw2');
+      log('  • Try clearing the color field and using angle-only mode', 'lw2');
+      log('  • Make sure angle min/max covers the watermark rotation', 'lw2');
+    } else {
+      log('✅ Removed ' + totalRemoved + ' watermark block(s) from ' + streamsHit + ' stream(s)', 'lok');
+    }
+
+    log('💾 Building output PDF...');
+    const blob    = new Blob([patched], { type: 'application/pdf' });
+    const url     = URL.createObjectURL(blob);
+    const outName = pdfFile.name.replace(/\.pdf$/i, '_cleaned.pdf');
+
+    document.getElementById('dlbtn').href     = url;
+    document.getElementById('dlbtn').download = outName;
+    document.getElementById('rd').textContent =
+      (pdfFile.size / 1024 / 1024).toFixed(2) + ' MB → ' +
+      (patched.length / 1024 / 1024).toFixed(2) + ' MB';
+
+    document.getElementById('sts').innerHTML = `
+      <div class="st"><div class="sn">${streamsHit}</div><div class="sl">Streams</div></div>
+      <div class="st"><div class="sn">${totalRemoved}</div><div class="sl">Removed</div></div>
+      <div class="st"><div class="sn">${(patched.length/1024).toFixed(0)}</div><div class="sl">KB Output</div></div>
+    `;
+
+    prog(100);
+    res.classList.add('show');
+    dot.style.animation = 'none';
+    dot.style.background = '#4ade80';
+    log('✅ Done!', 'lok');
+
+  } catch (err) {
+    log('❌ ' + err.message, 'le');
+    console.error(err);
+  } finally {
+    btn.disabled = false;
+  }
+});
+</script>
+</body>
+</html>

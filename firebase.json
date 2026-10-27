@@ -1,0 +1,15 @@
+{
+  "firestore": { "rules": "firestore.rules", "indexes": "firestore.indexes.json" },
+  "hosting": {
+    "public": ".",
+    "ignore": ["firebase.json", "firestore.*", "vercel.json", "README.md", "**/.*", "**/node_modules/**"],
+    "rewrites": [
+      { "source": "/", "destination": "/home.html" },
+      { "source": "/admin-secure-panel-sl786", "destination": "/admin.html" },
+      { "source": "/fbise/*/*", "destination": "/fbise-subject.html" },
+      { "source": "/fbise/*/*/*", "destination": "/fbise-chapters.html" },
+      { "source": "/fbise/*/*/*/*", "destination": "/fbise-viewer.html" }
+    ],
+    "cleanUrls": true
+  }
+}

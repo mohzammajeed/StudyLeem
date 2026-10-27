@@ -1,0 +1,17 @@
+User-agent: *
+Allow: /
+Disallow: /admin-secure-panel-sl786
+Disallow: /admin-secure-panel-sl786/
+Disallow: /_vercel/
+Disallow: /api/
+
+# Allow all major crawlers to index content
+User-agent: Googlebot
+Allow: /
+Disallow: /admin-secure-panel-sl786
+
+User-agent: Bingbot
+Allow: /
+Disallow: /admin-secure-panel-sl786
+
+Sitemap: https://studyleem.vercel.app/sitemap.xml

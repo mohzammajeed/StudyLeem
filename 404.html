@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>404 – Page Not Found | StudyLeem</title>
+<meta name="robots" content="noindex">
+<link rel="icon" type="image/x-icon" href="/favicon.ico">
+<link rel="icon" type="image/png" sizes="192x192" href="/favicon-192.png">
+<link rel="apple-touch-icon" href="/favicon-192.png">
+<link rel="stylesheet" href="/styles.css">
+<link rel="stylesheet" href="/pro.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-ZNNDTM33RB"></script>
+<script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-ZNNDTM33RB');</script>
+</head>
+<body>
+<header class="header">
+  <div class="container">
+    <div class="header-content">
+      <div class="logo">
+        <a href="/" style="display:flex;align-items:center;gap:.5rem;">
+          <img src="/logo.png" alt="StudyLeem Logo" style="height:50px;">
+          <div class="logo-text"><span style="color:#2563eb;">Study</span><span style="color:#f97316;" class="logo-leem">Leem</span></div>
+        </a>
+      </div>
+      <nav class="nav" aria-label="Main navigation">
+        <a href="/" class="nav-link">Home</a>
+        <a href="/fbise" class="nav-link">FBISE</a>
+        <a href="/about" class="nav-link">About</a>
+        <a href="/contact" class="nav-link">Contact</a>
+      </nav>
+      <button class="mobile-menu-btn" id="mobileMenuBtn" aria-label="Open menu">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </div>
+</header>
+<div class="mobile-menu" id="mobileMenu" role="navigation" aria-label="Mobile navigation">
+  <a href="/" class="mobile-nav-link">🏠 Home</a>
+  <a href="/fbise" class="mobile-nav-link">📚 FBISE</a>
+  <a href="/fbise/notes/9" class="mobile-nav-link">· Class 9 Notes</a>
+  <a href="/fbise/notes/10" class="mobile-nav-link">· Class 10 Notes</a>
+  <a href="/fbise/notes/11" class="mobile-nav-link">· Class 11 Notes</a>
+  <a href="/fbise/notes/12" class="mobile-nav-link">· Class 12 Notes</a>
+  <a href="/fbise/books/9" class="mobile-nav-link">· Class 9 Books</a>
+  <a href="/fbise/books/10" class="mobile-nav-link">· Class 10 Books</a>
+  <a href="/fbise/books/11" class="mobile-nav-link">· Class 11 Books</a>
+  <a href="/fbise/books/12" class="mobile-nav-link">· Class 12 Books</a>
+  <a href="/about" class="mobile-nav-link">ℹ️ About</a>
+  <a href="/contact" class="mobile-nav-link">✉️ Contact</a>
+  <a href="/privacy" class="mobile-nav-link">🔒 Privacy Policy</a>
+  <a href="/terms" class="mobile-nav-link">📋 Terms of Use</a>
+</div>
+
+<div class="main-content">
+  <div class="not-found">
+    <div class="not-found-content">
+      <div style="font-size:8rem;font-weight:900;color:#2563eb;line-height:1;font-family:'Poppins',sans-serif;">404</div>
+      <h2 style="font-family:'Poppins',sans-serif;font-size:2rem;margin:1rem 0 .5rem;">Page Not Found</h2>
+      <p style="color:#6b7280;margin-bottom:2rem;">The page you're looking for doesn't exist or has been moved.</p>
+      <div style="display:flex;gap:1rem;justify-content:center;flex-wrap:wrap;">
+        <a href="/" class="btn btn-primary">Go to Home</a>
+        <a href="/fbise" class="btn btn-secondary">Browse FBISE</a>
+      </div>
+      <div style="margin-top:2.5rem;">
+        <p style="color:#6b7280;font-size:.9rem;">Looking for FBISE notes? Try:</p>
+        <div style="display:flex;gap:.75rem;justify-content:center;flex-wrap:wrap;margin-top:.75rem;">
+          <a href="/fbise/notes/9" style="color:#2563eb;">Class 9</a>
+          <a href="/fbise/notes/10" style="color:#2563eb;">Class 10</a>
+          <a href="/fbise/notes/11" style="color:#2563eb;">Class 11</a>
+          <a href="/fbise/notes/12" style="color:#2563eb;">Class 12</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<footer class="footer">
+  <div class="footer-inner">
+    <div class="container">
+      <div class="footer-bottom">
+        <div class="footer-bottom-left">
+          <p>&copy; 2026 StudyLeem. All rights reserved. Free FBISE Study Materials for Federal Board Pakistan.</p>
+        </div>
+        <div class="footer-bottom-right">
+          <a href="/privacy">Privacy</a>
+          <span>·</span>
+          <a href="/terms">Terms</a>
+          <span>·</span>
+          <a href="/contact">Contact</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script>
+  var btn=document.getElementById('mobileMenuBtn');
+  var menu=document.getElementById('mobileMenu');
+  if(btn&&menu){
+    btn.onclick=function(e){e.stopPropagation();menu.classList.toggle('active');};
+    document.onclick=function(e){if(!menu.contains(e.target)&&!btn.contains(e.target))menu.classList.remove('active');};
+  }
+</script>
+<script>window.va=window.va||function(){(window.vaq=window.vaq||[]).push(arguments);};</script>
+<script defer src="/_vercel/insights/script.js"></script>
+</body>
+</html>

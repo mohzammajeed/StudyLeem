@@ -1,0 +1,108 @@
+{
+  "rewrites": [
+    {
+      "source": "/",
+      "destination": "/home.html"
+    },
+    {
+      "source": "/home",
+      "destination": "/home.html"
+    },
+    {
+      "source": "/about",
+      "destination": "/about.html"
+    },
+    {
+      "source": "/privacy",
+      "destination": "/privacy.html"
+    },
+    {
+      "source": "/terms",
+      "destination": "/terms.html"
+    },
+    {
+      "source": "/contact",
+      "destination": "/contact.html"
+    },
+    {
+      "source": "/admin-secure-panel-sl786",
+      "destination": "/admin.html"
+    },
+    {
+      "source": "/fbise",
+      "destination": "/fbise.html"
+    },
+    {
+      "source": "/fbise/notes/:class",
+      "destination": "/fbise-subject.html"
+    },
+    {
+      "source": "/fbise/books/:class",
+      "destination": "/fbise-subject.html"
+    },
+    {
+      "source": "/fbise/notes/:class/:subject",
+      "destination": "/fbise-chapters.html"
+    },
+    {
+      "source": "/fbise/books/:class/:subject",
+      "destination": "/fbise-chapters.html"
+    },
+    {
+      "source": "/fbise/notes/:class/:subject/:chapter",
+      "destination": "/fbise-viewer.html"
+    },
+    {
+      "source": "/fbise/books/:class/:subject/:chapter",
+      "destination": "/fbise-viewer.html"
+    },
+    {
+      "source": "/class",
+      "destination": "/class.html"
+    },
+    {
+      "source": "/subject",
+      "destination": "/subject.html"
+    },
+    {
+      "source": "/pdf-preview",
+      "destination": "/pdf-preview.html"
+    },
+    {
+      "source": "/leemai",
+      "destination": "/leemai.html"
+    }
+  ],
+  "headers": [
+    {
+      "source": "/(.*)",
+      "headers": [
+        {
+          "key": "X-Content-Type-Options",
+          "value": "nosniff"
+        },
+        {
+          "key": "X-XSS-Protection",
+          "value": "1; mode=block"
+        },
+        {
+          "key": "X-Frame-Options",
+          "value": "SAMEORIGIN"
+        },
+        {
+          "key": "Referrer-Policy",
+          "value": "strict-origin-when-cross-origin"
+        }
+      ]
+    },
+    {
+      "source": "/admin-secure-panel-sl786",
+      "headers": [
+        {
+          "key": "X-Robots-Tag",
+          "value": "noindex, nofollow"
+        }
+      ]
+    }
+  ]
+}
