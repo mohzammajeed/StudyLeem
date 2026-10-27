@@ -187,12 +187,11 @@ const DB = {
   }
 };
 
-/* ── Admin auth (Firebase Auth email/password; admin = a doc at admins/{uid}) ── */
+/* ── Admin auth (Firebase Auth email/password; admin = UID listed in ADMIN_UIDS) ── */
 const authReady = new Promise(res => { const un = onAuthStateChanged(auth, u => { un(); res(u); }); });
-async function isAdminUser(u) {
-  if (!u) return false;
-  try { return (await getDoc(doc(db, 'admins', u.uid))).exists(); } catch (_) { return false; }
-}
+// Admin accounts (Firebase Auth UIDs). Must match the list in firestore.rules.
+const ADMIN_UIDS = ['jr2CtdF0izaqzjU2Qpwicb0Zg4u1'];
+async function isAdminUser(u) { return !!u && ADMIN_UIDS.includes(u.uid); }
 const Auth = {
   async check() { const u = await authReady.then(() => auth.currentUser); return await isAdminUser(u); },
   async login(email, password) {
@@ -200,9 +199,8 @@ const Auth = {
     try { cred = await signInWithEmailAndPassword(auth, String(email).trim(), String(password)); }
     catch (e) { throw friendly(e); }
     if (!(await isAdminUser(cred.user))) {
-      const uid = cred.user.uid;
       await signOut(auth);
-      throw new Error(`Logged in, but this account is not an admin yet. In Firebase Console → Firestore, create document admins/${uid} (any field).`);
+      throw new Error('This account is not authorized as admin.');
     }
     return { ok: true, email: cred.user.email };
   },
