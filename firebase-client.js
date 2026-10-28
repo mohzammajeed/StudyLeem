@@ -190,7 +190,7 @@ const DB = {
 /* ── Admin auth (Firebase Auth email/password; admin = UID listed in ADMIN_UIDS) ── */
 const authReady = new Promise(res => { const un = onAuthStateChanged(auth, u => { un(); res(u); }); });
 // Admin accounts (Firebase Auth UIDs). Must match the list in firestore.rules.
-const ADMIN_UIDS = ['jr2CtdF0izaqzjU2Qpwicb0Zg4u1'];
+const ADMIN_UIDS = ['k7bXI5OpyQRtCZIoS6fS2ywfz4T2'];
 async function isAdminUser(u) { return !!u && ADMIN_UIDS.includes(u.uid); }
 const Auth = {
   async check() { const u = await authReady.then(() => auth.currentUser); return await isAdminUser(u); },
