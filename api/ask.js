@@ -1,4 +1,4 @@
-// Vercel serverless function: LeemAI -> Google Gemini (Google AI Studio key).
+//  Vercel serverless function: LeemAI -> Google Gemini (Google AI Studio key).
 // Env vars (Vercel -> Settings -> Environment Variables):
 //   GEMINI_API_KEY  (required)   your Google AI Studio key
 //   GEMINI_MODEL    (optional)   default: gemini-2.5-flash
