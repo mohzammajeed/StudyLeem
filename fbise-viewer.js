@@ -42,10 +42,22 @@
     return m ? m[1] : null;
   }
 
+  // MEGA: mega.nz/file/ID#KEY, mega.nz/#!ID!KEY, mega.nz/embed/ID#KEY  ->  https://mega.nz/embed/ID#KEY
+  function megaEmbed(url) {
+    if (!url || !/mega\.(nz|co\.nz)/i.test(url)) return null;
+    const m = url.match(/\/(?:file|embed)\/([\w-]+)#([\w-]+)/i) || url.match(/#!([\w-]+)!([\w-]+)/);
+    return m ? `https://mega.nz/embed/${m[1]}#${m[2]}` : null;
+  }
+
   // Returns ordered list of embed strategies to try
   function getEmbedStrategies(rawUrl) {
     const id = driveId(rawUrl);
     const strategies = [];
+    const mega = megaEmbed(rawUrl);
+    if (mega) {
+      strategies.push({ url: mega, label: 'Mega Viewer', sandbox: null, mega: true, timeout: 25000 });
+      return strategies;
+    }
 
     if (id) {
       // Strategy 1: GDrive preview (works on desktop, often blocked on mobile)
@@ -196,99 +208,12 @@
 
   /* ── PDF loading — multi-strategy with auto-fallback ── */
   function loadPdf(rawUrl) {
-    _rawPdfUrl  = rawUrl;
-    const iframe   = document.getElementById('pdfIframe');
-    const loading  = document.getElementById('pdfLoading');
-    const errorDiv = document.getElementById('pdfError');
-    const overlay  = document.getElementById('antiDlOverlay');
-    const loadMsg  = loading.querySelector('p');
-
-    const strategies = getEmbedStrategies(rawUrl);
-    let stratIdx = 0;
-
-    function tryStrategy(idx) {
-      if (idx >= strategies.length) {
-        showError();
-        return;
-      }
-      const s = strategies[idx];
-      if (loadMsg) {
-        loadMsg.textContent = idx === 0
-          ? 'Loading PDF, please wait…'
-          : `Trying alternative viewer… (${idx + 1}/${strategies.length})`;
-      }
-
-      // Clear previous state
-      iframe.style.display = 'none';
-      iframe.removeAttribute('sandbox');
-      iframe.src = 'about:blank';
-
-      // Small delay so 'about:blank' actually clears before new src
-      setTimeout(() => {
-        iframe.setAttribute('sandbox', s.sandbox);
-        iframe.src = s.url;
-      }, 80);
-
-      // GDrive preview fires onload even when blocked (empty frame).
-      // We detect a blocked GDrive frame by checking contentDocument title
-      // after load — blocked frames show "Signin" or have no document access.
-      // For safety we also use a timeout per strategy.
-      const STRATEGY_TIMEOUT = idx === 0 ? 8000 : 12000;
-
-      let timedOut = false;
-      const timer = setTimeout(() => {
-        timedOut = true;
-        console.warn(`[viewer] Strategy ${idx} (${s.label}) timed out, trying next…`);
-        tryStrategy(idx + 1);
-      }, STRATEGY_TIMEOUT);
-
-      iframe.onload = () => {
-        if (timedOut) return;
-        clearTimeout(timer);
-
-        // For GDrive /preview: if the frame is blocked, its title is empty
-        // or inaccessible due to cross-origin. We can't read it — but we CAN
-        // check if the iframe has zero scrollHeight (blank page).
-        // Give it 1s to render, then check.
-        setTimeout(() => {
-          if (timedOut) return;
-          let blocked = false;
-          try {
-            // Cross-origin check — will throw if framed properly (good sign)
-            const doc = iframe.contentDocument || iframe.contentWindow.document;
-            const body = doc && doc.body;
-            // If we CAN read the doc and it's empty/signin → blocked
-            if (body && body.scrollHeight < 10) blocked = true;
-            if (body && doc.title && /sign.?in|accounts\.google/i.test(doc.title)) blocked = true;
-          } catch (e) {
-            // Cross-origin error = frame loaded a real page (not blocked blank)
-            blocked = false;
-          }
-
-          if (blocked) {
-            console.warn(`[viewer] Strategy ${idx} (${s.label}) appears blocked, trying next…`);
-            tryStrategy(idx + 1);
-            return;
-          }
-
-          // Success
-          loading.style.display  = 'none';
-          errorDiv.style.display = 'none';
-          iframe.style.display   = 'block';
-          // Anti-DL overlay only makes sense for GDrive (strategy 0)
-          overlay.style.display  = (idx === 0) ? 'block' : 'none';
-        }, 1000);
-      };
-
-      iframe.onerror = () => {
-        if (timedOut) return;
-        clearTimeout(timer);
-        console.warn(`[viewer] Strategy ${idx} (${s.label}) onerror, trying next…`);
-        tryStrategy(idx + 1);
-      };
-    }
-
-    tryStrategy(stratIdx);
+    _rawPdfUrl = rawUrl;
+    ['pdfLoading', 'pdfError', 'antiDlOverlay', 'pdfIframe'].forEach(id => { const e = document.getElementById(id); if (e) e.style.display = 'none'; });
+    const box = document.getElementById('pdfContainer');
+    let host = document.getElementById('pdfHost');
+    if (!host) { host = document.createElement('div'); host.id = 'pdfHost'; box.appendChild(host); }
+    StudyPDF.mount(host, rawUrl);   // handles Mega, Google Drive, Dropbox and direct links
   }
 
   function showError() {
@@ -315,7 +240,8 @@
     clearInterval(_dlTimer);
     closeModal();
     resetTimer();
-    // Fire the download
+    // Fire the download (Mega files are decrypted in-browser and saved as a real PDF)
+    if (window.StudyPDF && StudyPDF.isMega(_rawPdfUrl)) { StudyPDF.download(_rawPdfUrl, document.getElementById('docTitle').textContent).catch(e => alert(e.message)); return; }
     const a = document.createElement('a');
     a.href     = _downloadUrl;
     a.target   = '_blank';
@@ -360,8 +286,8 @@
 
       if (_timerCount <= 0) {
         clearInterval(_dlTimer);
-        if (numEl) numEl.textContent = '✓';
-        if (goBtn) { goBtn.disabled = false; goBtn.textContent = '⬇ Download Now'; }
+        if (numEl) numEl.innerHTML = ic('check');
+        if (goBtn) { goBtn.disabled = false; goBtn.innerHTML = ic('download') + ' Download Now'; }
         if (circleEl) circleEl.style.stroke = '#22c55e'; // green when ready
       }
     }, 1000);
@@ -415,7 +341,6 @@
     if (!pdfUrl) { showError(); return; }
 
     _downloadUrl = makeDownloadUrl(pdfUrl);
-    document.getElementById('openTabBtn').href   = pdfUrl;
     document.getElementById('fallbackOpen').href = pdfUrl;
 
     loadPdf(pdfUrl);
