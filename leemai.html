@@ -639,9 +639,9 @@
 
 <script>
 // ── CONFIG ────────────────────────────────────────────────────────────────────
-const LEEMAI_API = "https://leemai-production.up.railway.app";
+const LEEMAI_API = ""; // same-origin: handled by /api/ask (Vercel function -> Gemini)
 // Warmup: start loading model as soon as page opens
-fetch(LEEMAI_API + '/api/warmup').catch(() => {});
+
 
 // ── Mobile sidebar toggle ─────────────────────────────────────────────────────
 const sidebarToggleBar = document.getElementById('sidebarToggleBar');
@@ -704,7 +704,7 @@ async function sendMessage() {
     const res = await fetch(LEEMAI_API + '/api/ask', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ question: query, top_k: 4 })
+      body: JSON.stringify({ question: query })
     });
 
     const data = await res.json();
