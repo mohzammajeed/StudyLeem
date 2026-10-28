@@ -1,8 +1,10 @@
 // Vercel serverless function: LeemAI -> Google Gemini (Google AI Studio key).
 // Env vars (Vercel -> Settings -> Environment Variables):
 //   GEMINI_API_KEY  (required)   your Google AI Studio key
-//   GEMINI_MODEL    (optional)   default: gemini-2.5-flash
-const MODEL = process.env.GEMINI_MODEL || 'gemini-2.5-flash';
+//   GEMINI_MODEL    (optional)   preferred model; if it is unavailable the next one below is tried automatically
+const MODELS = [process.env.GEMINI_MODEL, 'gemini-3.5-flash', 'gemini-3.1-flash-lite', 'gemini-3.6-flash', 'gemini-3.8-flash']
+  .filter((m, i, a) => m && a.indexOf(m) === i);
+let working = null; // remembers the last model that answered (per warm instance)
 
 const SYSTEM = `You are LeemAI, the study assistant of StudyLeem (studyleem.vercel.app), for students of FBISE (Federal Board, Pakistan), Classes 9-12.
 - Help with Physics, Chemistry, Biology, Mathematics, Computer Science, English, Urdu, Islamiat and Pakistan Studies at FBISE level.
@@ -26,7 +28,7 @@ function limited(ip) {
 module.exports = async (req, res) => {
   res.setHeader('Cache-Control', 'no-store');
   // health check: open /api/ask in the browser to see if the function is live and the key is set
-  if (req.method === 'GET') return res.status(200).json({ status: 'ok', configured: Boolean(process.env.GEMINI_API_KEY), model: MODEL });
+  if (req.method === 'GET') return res.status(200).json({ status: 'ok', configured: Boolean(process.env.GEMINI_API_KEY), model: working || MODELS[0], candidates: MODELS });
   if (req.method !== 'POST') return res.status(405).json({ detail: 'Method not allowed' });
 
   // only accept calls coming from your own site (and local dev)
@@ -48,21 +50,30 @@ module.exports = async (req, res) => {
   if (!question) return res.status(400).json({ detail: 'Please type a question.' });
 
   try {
-    const r = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${encodeURIComponent(MODEL)}:generateContent`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json', 'x-goog-api-key': key },
-      body: JSON.stringify({
-        systemInstruction: { parts: [{ text: SYSTEM }] },
-        contents: [{ role: 'user', parts: [{ text: question }] }],
-        generationConfig: { temperature: 0.4, maxOutputTokens: 1024 }
-      })
-    });
-    const data = await r.json().catch(() => ({}));
-
+    const order = working ? [working, ...MODELS.filter(m => m !== working)] : MODELS;
+    let r, data, lastStatus = 0;
+    for (const model of order) {
+      r = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${encodeURIComponent(model)}:generateContent`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'x-goog-api-key': key },
+        body: JSON.stringify({
+          systemInstruction: { parts: [{ text: SYSTEM }] },
+          contents: [{ role: 'user', parts: [{ text: question }] }],
+          generationConfig: { temperature: 0.4, maxOutputTokens: 1024 }
+        })
+      });
+      data = await r.json().catch(() => ({}));
+      if (r.ok) { working = model; break; }
+      lastStatus = r.status;
+      console.error('Gemini error', model, r.status, JSON.stringify(data).slice(0, 400));
+      // bad key / permission: no point trying other models
+      if (r.status === 403 || (r.status === 400 && /api key/i.test(JSON.stringify(data)))) break;
+      // 404 (model retired), 429 (quota), 5xx (overloaded): try the next model
+    }
     if (!r.ok) {
-      console.error('Gemini error', r.status, JSON.stringify(data).slice(0, 500));
-      const msg = r.status === 429 ? 'LeemAI is busy right now. Please try again in a minute.'
-        : (r.status === 400 || r.status === 403) ? 'LeemAI could not be reached (check the API key / model name in Vercel).'
+      const msg = lastStatus === 429 ? 'LeemAI is busy right now. Please try again in a minute.'
+        : (lastStatus === 400 || lastStatus === 403) ? 'LeemAI could not be reached (check the API key in Vercel).'
+        : lastStatus === 404 ? 'LeemAI model is unavailable. Set GEMINI_MODEL in Vercel to a current model name.'
         : 'LeemAI had a problem. Please try again.';
       return res.status(502).json({ detail: msg });
     }
