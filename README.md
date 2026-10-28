@@ -15,9 +15,8 @@ pro.css              UI layer on top of styles.css
 1. **Firestore:** console.firebase.google.com → project *studyleem0786* → **Build → Firestore Database → Create database** (production mode, any region).
 2. **Rules:** Firestore → **Rules** tab → paste the contents of `firestore.rules` → **Publish**.
 3. **Auth:** **Build → Authentication → Get started → Sign-in method → Email/Password → Enable**.
-4. **Admin user:** Authentication → **Users → Add user** (your email + strong password). Copy that user's **UID**.
-5. **Authorize admin:** Firestore → **Start collection** `admins` → Document ID = the UID → add any field (e.g. `role: "admin"`) → Save.
-6. **Authorized domains:** Authentication → Settings → **Authorized domains** → add your Vercel domain (e.g. `studyleem.vercel.app`) and any custom domain.
+4. **Admin user:** Authentication → Users → your admin account. Its UID must be `jr2CtdF0izaqzjU2Qpwicb0Zg4u1` (already set in `firestore.rules` and `firebase-client.js`). No `admins` collection is needed. To use another account, replace the UID in both files and re-publish the rules.
+5. **Authorized domains:** Authentication → Settings → **Authorized domains** → add your Vercel domain (e.g. `studyleem.vercel.app`) and any custom domain.
 
 ## Deploy
 

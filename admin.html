@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+<script src="/icons.js"></script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="robots" content="noindex, nofollow">
@@ -48,17 +49,17 @@
       <button class="sidebar-close" id="sidebarClose">×</button>
     </div>
     <nav class="admin-nav">
-      <a href="#" class="admin-nav-link active" data-page="upload">📤 Upload</a>
-      <a href="#" class="admin-nav-link" data-page="manage">📚 Manage</a>
-      <a href="#" class="admin-nav-link" data-page="stats">📊 Stats</a>
-      <a href="#" class="admin-nav-link" data-page="messages">✉️ Messages</a>
-      <a href="#" id="logoutBtn" class="admin-nav-link logout">🚪 Logout</a>
+      <a href="#" class="admin-nav-link active" data-page="upload"><svg class="ic" width="1em" height="1em" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="/icons.svg#upload"/></svg> Upload</a>
+      <a href="#" class="admin-nav-link" data-page="manage"><svg class="ic" width="1em" height="1em" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="/icons.svg#book-open"/></svg> Manage</a>
+      <a href="#" class="admin-nav-link" data-page="stats"><svg class="ic" width="1em" height="1em" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="/icons.svg#chart"/></svg> Stats</a>
+      <a href="#" class="admin-nav-link" data-page="messages"><svg class="ic" width="1em" height="1em" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="/icons.svg#mail"/></svg> Messages</a>
+      <a href="#" id="logoutBtn" class="admin-nav-link logout"><svg class="ic" width="1em" height="1em" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="/icons.svg#log-out"/></svg> Logout</a>
     </nav>
   </aside>
 
   <main class="admin-main">
     <div class="admin-header">
-      <button class="mobile-sidebar-toggle" id="sidebarToggle">☰</button>
+      <button class="mobile-sidebar-toggle" id="sidebarToggle"><svg class="ic" width="1em" height="1em" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="/icons.svg#menu"/></svg></button>
       <h1 id="pageTitle">Upload Material</h1>
     </div>
 
@@ -72,11 +73,11 @@
           <div class="material-type-selector" style="margin-bottom:1.5rem;">
             <label class="type-radio">
               <input type="radio" name="materialType" value="notes" checked>
-              <span class="type-label"><span class="type-icon">📝</span><span>Notes</span></span>
+              <span class="type-label"><span class="type-icon"><svg class="ic" width="1em" height="1em" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="/icons.svg#notes"/></svg></span><span>Notes</span></span>
             </label>
             <label class="type-radio">
               <input type="radio" name="materialType" value="books">
-              <span class="type-label"><span class="type-icon">📚</span><span>Books</span></span>
+              <span class="type-label"><span class="type-icon"><svg class="ic" width="1em" height="1em" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="/icons.svg#book-open"/></svg></span><span>Books</span></span>
             </label>
           </div>
 
@@ -84,13 +85,13 @@
           <div id="contentTypeRow" class="content-type-row">
             <label class="content-type-label">
               <input type="radio" name="contentType" value="chapter" checked>
-              <span class="ct-icon">📖</span>
+              <span class="ct-icon"><svg class="ic" width="1em" height="1em" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="/icons.svg#book"/></svg></span>
               <strong>Chapter Note</strong>
               <small>e.g. Chapter 1, Chapter 2</small>
             </label>
             <label class="content-type-label">
               <input type="radio" name="contentType" value="exercise">
-              <span class="ct-icon">🧮</span>
+              <span class="ct-icon"><svg class="ic" width="1em" height="1em" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="/icons.svg#calculator"/></svg></span>
               <strong>Math Exercise</strong>
               <small>e.g. Exercise 1.1, 2.3</small>
             </label>
@@ -146,8 +147,8 @@
             </div>
 
             <div class="form-group">
-              <label>PDF Link * <small style="color:#6b7280;">(Google Drive share link recommended)</small></label>
-              <input type="url" id="pdfLink" required placeholder="https://drive.google.com/file/d/...">
+              <label>PDF Link * <small style="color:#6b7280;">(Google Drive or Mega share link)</small></label>
+              <input type="url" id="pdfLink" required placeholder="https://mega.nz/file/... or https://drive.google.com/file/d/...">
               <div class="url-preview-link" id="pdfPreviewLink"></div>
             </div>
 
@@ -161,7 +162,7 @@
             </button>
             <div id="uploadStatus" class="status-message"></div>
             <div id="generatedUrl" style="display:none;margin-top:1rem;padding:1rem;background:#f0fdf4;border:1px solid #86efac;border-radius:8px;">
-              <strong>✅ Material URL:</strong><br>
+              <strong><svg class="ic" width="1em" height="1em" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="/icons.svg#check-circle"/></svg> Material URL:</strong><br>
               <a id="generatedUrlLink" href="#" target="_blank" style="color:#2563eb;word-break:break-all;"></a>
             </div>
           </form>
@@ -201,8 +202,8 @@
           <strong>Backup &amp; Import</strong>
           <p>Export all materials as JSON, restore from a JSON file (e.g. saved from your old site's <code>/api/materials</code>), or copy from the old Firebase project. IDs are preserved; safe to run more than once.</p>
           <div class="tool-actions">
-            <button type="button" id="exportBtn" class="btn btn-secondary">⬇ Export JSON</button>
-            <label class="btn btn-secondary" style="cursor:pointer">⬆ Import JSON<input type="file" id="importFile" accept=".json,application/json" hidden></label>
+            <button type="button" id="exportBtn" class="btn btn-secondary"><svg class="ic" width="1em" height="1em" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="/icons.svg#download"/></svg> Export JSON</button>
+            <label class="btn btn-secondary" style="cursor:pointer"><svg class="ic" width="1em" height="1em" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="/icons.svg#upload"/></svg> Import JSON<input type="file" id="importFile" accept=".json,application/json" hidden></label>
             <button type="button" id="importBtn" class="btn btn-primary">Import from old Firebase</button>
           </div>
           <div id="importStatus" class="tool-status"></div>

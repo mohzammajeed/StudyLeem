@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+<script src="/icons.js"></script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title id="pageTitle">PDF Preview – StudyLeem</title>
@@ -36,11 +37,11 @@ body{display:flex;flex-direction:column;min-height:100vh;margin:0;background:#1e
 </head>
 <body>
 <div class="viewer-bar">
-  <a href="#" id="backLink" class="viewer-back">← Back</a>
+  <a href="#" id="backLink" class="viewer-back"><svg class="ic" width="1em" height="1em" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="/icons.svg#arrow-left"/></svg> Back</a>
   <span class="viewer-title" id="docTitle">Loading PDF...</span>
   <div class="viewer-actions">
-    <a href="#" id="downloadBtn" class="viewer-btn" target="_blank" rel="noopener">⬇ Download</a>
-    <a href="#" id="openTabBtn"  class="viewer-btn" target="_blank" rel="noopener">↗ Open</a>
+    <a href="#" id="downloadBtn" class="viewer-btn" target="_blank" rel="noopener"><svg class="ic" width="1em" height="1em" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="/icons.svg#download"/></svg> Download</a>
+    <a href="#" id="openTabBtn"  class="viewer-btn" target="_blank" rel="noopener"><svg class="ic" width="1em" height="1em" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="/icons.svg#external"/></svg> Open</a>
   </div>
 </div>
 
@@ -54,10 +55,10 @@ body{display:flex;flex-direction:column;min-height:100vh;margin:0;background:#1e
     <small style="color:#64748b;">Large files may take a moment</small>
   </div>
   <div class="pdf-error" id="pdfError">
-    <div style="font-size:3rem;">📄</div>
+    <div style="font-size:3rem;"><svg class="ic" width="1em" height="1em" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="/icons.svg#file"/></svg></div>
     <h2>PDF Not Loading?</h2>
     <p style="color:#94a3b8;">Your browser may be blocking the preview. Try opening directly.</p>
-    <a href="#" id="fallbackOpen" target="_blank" rel="noopener" class="viewer-btn" style="font-size:1rem;padding:.75rem 1.5rem;margin-top:1rem;">Open PDF Directly ↗</a>
+    <a href="#" id="fallbackOpen" target="_blank" rel="noopener" class="viewer-btn" style="font-size:1rem;padding:.75rem 1.5rem;margin-top:1rem;">Open PDF Directly <svg class="ic" width="1em" height="1em" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="/icons.svg#external"/></svg></a>
   </div>
   <iframe id="pdfIframe" class="pdf-iframe" title="PDF Viewer" allowfullscreen></iframe>
 </div>
@@ -82,6 +83,8 @@ body{display:flex;flex-direction:column;min-height:100vh;margin:0;background:#1e
   }
   // Embed URL
   function makeEmbed(url) {
+    const mg = /mega\.(nz|co\.nz)/i.test(url) && (url.match(/\/(?:file|embed)\/([\w-]+)#([\w-]+)/i) || url.match(/#!([\w-]+)!([\w-]+)/));
+    if (mg) return `https://mega.nz/embed/${mg[1]}#${mg[2]}`;
     const m = url.match(/\/file\/d\/([^/?]+)/);
     if (m) return `https://drive.google.com/file/d/${m[1]}/preview`;
     return `https://docs.google.com/viewer?url=${encodeURIComponent(url)}&embedded=true`;
@@ -106,7 +109,7 @@ body{display:flex;flex-direction:column;min-height:100vh;margin:0;background:#1e
       loading.style.display = 'none';
       errDiv.style.display  = 'flex';
     }
-  }, 15000);
+  }, 30000);
 
   iframe.onload = () => {
     clearTimeout(timer);

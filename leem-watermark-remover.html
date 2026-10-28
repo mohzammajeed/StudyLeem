@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+<script src="/icons.js"></script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>PDF Watermark Remover</title>
@@ -60,24 +61,24 @@ code{background:#0f1117;padding:1px 5px;border-radius:3px;font-size:.64rem;font-
 </head>
 <body>
 <div class="card">
-  <h1>🧹 PDF Watermark Remover</h1>
+  <h1><svg class="ic" width="1em" height="1em" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="/icons.svg#eraser"/></svg> PDF Watermark Remover</h1>
   <p class="sub">Removes diagonal text watermarks from compressed PDFs · 100% offline · Nothing uploaded</p>
 
   <div class="dz" id="dz">
     <input type="file" id="fi" accept=".pdf">
-    <div class="dz-icon">📄</div>
+    <div class="dz-icon"><svg class="ic" width="1em" height="1em" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="/icons.svg#file"/></svg></div>
     <h3>Drop PDF here or click to browse</h3>
     <p>Handles FlateDecode compressed streams</p>
   </div>
   <div class="fbadge" id="fb">
-    <span>📋</span>
+    <span><svg class="ic" width="1em" height="1em" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="/icons.svg#clipboard"/></svg></span>
     <span class="fn" id="fn">—</span>
     <span class="fs" id="fs">—</span>
-    <button class="fx" id="fx">✕</button>
+    <button class="fx" id="fx"><svg class="ic" width="1em" height="1em" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="/icons.svg#x"/></svg></button>
   </div>
 
   <div class="box">
-    <div class="box-t">⚙ Detection Settings — Pre-filled for studyplusplus.com</div>
+    <div class="box-t"><svg class="ic" width="1em" height="1em" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="/icons.svg#sliders"/></svg> Detection Settings — Pre-filled for studyplusplus.com</div>
 
     <div class="field">
       <label>Watermark color signature — <code>R G B rg</code> (0–1 scale)</label>
@@ -104,7 +105,7 @@ code{background:#0f1117;padding:1px 5px;border-radius:3px;font-size:.64rem;font-
     <div class="hint" style="margin-top:-6px">Only used when matrix field is blank — removes any diagonal text in this range.</div>
   </div>
 
-  <button class="btn" id="btn" disabled>⚙ Remove Watermarks</button>
+  <button class="btn" id="btn" disabled><svg class="ic" width="1em" height="1em" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="/icons.svg#sliders"/></svg> Remove Watermarks</button>
 
   <div class="lw" id="lw">
     <div class="lbar"><div class="dot" id="dot"></div>Processing</div>
@@ -113,14 +114,14 @@ code{background:#0f1117;padding:1px 5px;border-radius:3px;font-size:.64rem;font-
   </div>
 
   <div class="res" id="res">
-    <h3>✓ Watermarks Removed!</h3>
+    <h3><svg class="ic" width="1em" height="1em" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="/icons.svg#check"/></svg> Watermarks Removed!</h3>
     <p id="rd"></p>
-    <a class="dl" id="dlbtn" href="#" download="cleaned.pdf">⬇ Download Cleaned PDF</a>
+    <a class="dl" id="dlbtn" href="#" download="cleaned.pdf"><svg class="ic" width="1em" height="1em" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="/icons.svg#download"/></svg> Download Cleaned PDF</a>
     <div class="sts" id="sts"></div>
   </div>
 
   <div class="info">
-    ⚡ <strong>Method:</strong> Reads raw PDF bytes → finds every <code>FlateDecode</code> stream → decompresses with <strong>pako</strong> (zlib) → finds lines containing the watermark color <code>rg</code> → removes the entire surrounding <code>q...Q</code> graphics block → recompresses → updates <code>/Length</code> in the stream dict → outputs valid PDF. No external server. Works offline after first page load.
+    <svg class="ic" width="1em" height="1em" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="/icons.svg#zap"/></svg> <strong>Method:</strong> Reads raw PDF bytes <svg class="ic" width="1em" height="1em" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="/icons.svg#arrow-right"/></svg> finds every <code>FlateDecode</code> stream <svg class="ic" width="1em" height="1em" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="/icons.svg#arrow-right"/></svg> decompresses with <strong>pako</strong> (zlib) <svg class="ic" width="1em" height="1em" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="/icons.svg#arrow-right"/></svg> finds lines containing the watermark color <code>rg</code> <svg class="ic" width="1em" height="1em" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="/icons.svg#arrow-right"/></svg> removes the entire surrounding <code>q...Q</code> graphics block <svg class="ic" width="1em" height="1em" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="/icons.svg#arrow-right"/></svg> recompresses <svg class="ic" width="1em" height="1em" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="/icons.svg#arrow-right"/></svg> updates <code>/Length</code> in the stream dict <svg class="ic" width="1em" height="1em" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="/icons.svg#arrow-right"/></svg> outputs valid PDF. No external server. Works offline after first page load.
   </div>
 </div>
 
@@ -251,7 +252,7 @@ async function patchPDF(pdfBytes, targetCol, targetMat, amin, amax) {
   let streamsHit   = 0;
   let pos          = 0;
 
-  // We collect all patches first, then apply from end→start to preserve offsets
+  // We collect all patches first, then apply from endstart to preserve offsets
   const patches = []; // {start, end, newBytes}
 
   while (pos < data.length) {
@@ -329,7 +330,7 @@ async function patchPDF(pdfBytes, targetCol, targetMat, amin, amax) {
     }
   }
 
-  // Apply patches from end → start so offsets stay valid
+  // Apply patches from end start so offsets stay valid
   patches.sort((a, b) => b.start - a.start);
   let resultArr = [data];
 
@@ -413,28 +414,28 @@ btn.addEventListener('click', async () => {
     const targetCol = colStr ? colStr.split(/\s+/).map(Number) : [];
     const targetMat = matStr ? matStr.split(/\s+/).map(Number) : [];
 
-    log('📂 Reading file...');
+    log('Reading file...');
     const ab       = await pdfFile.arrayBuffer();
     const pdfBytes = new Uint8Array(ab);
-    log('📄 Size: ' + (pdfBytes.length / 1024 / 1024).toFixed(2) + ' MB', 'lok');
+    log('Size: ' + (pdfBytes.length / 1024 / 1024).toFixed(2) + ' MB', 'lok');
     prog(15);
 
-    log('🔍 Scanning streams and removing watermarks...');
+    log('Scanning streams and removing watermarks...');
     const { patched, totalRemoved, streamsHit } = await patchPDF(
       pdfBytes, targetCol, targetMat, amin, amax
     );
     prog(92);
 
     if (totalRemoved === 0) {
-      log('⚠ No watermark found. Check settings:', 'lw2');
+      log('No watermark found. Check settings:', 'lw2');
       log('  • Is the color value correct for your PDF?', 'lw2');
       log('  • Try clearing the color field and using angle-only mode', 'lw2');
       log('  • Make sure angle min/max covers the watermark rotation', 'lw2');
     } else {
-      log('✅ Removed ' + totalRemoved + ' watermark block(s) from ' + streamsHit + ' stream(s)', 'lok');
+      log('Removed ' + totalRemoved + ' watermark block(s) from ' + streamsHit + ' stream(s)', 'lok');
     }
 
-    log('💾 Building output PDF...');
+    log('Building output PDF...');
     const blob    = new Blob([patched], { type: 'application/pdf' });
     const url     = URL.createObjectURL(blob);
     const outName = pdfFile.name.replace(/\.pdf$/i, '_cleaned.pdf');
@@ -442,7 +443,7 @@ btn.addEventListener('click', async () => {
     document.getElementById('dlbtn').href     = url;
     document.getElementById('dlbtn').download = outName;
     document.getElementById('rd').textContent =
-      (pdfFile.size / 1024 / 1024).toFixed(2) + ' MB → ' +
+      (pdfFile.size / 1024 / 1024).toFixed(2) + ' MB ' +
       (patched.length / 1024 / 1024).toFixed(2) + ' MB';
 
     document.getElementById('sts').innerHTML = `
@@ -455,10 +456,10 @@ btn.addEventListener('click', async () => {
     res.classList.add('show');
     dot.style.animation = 'none';
     dot.style.background = '#4ade80';
-    log('✅ Done!', 'lok');
+    log('Done!', 'lok');
 
   } catch (err) {
-    log('❌ ' + err.message, 'le');
+    log('' + err.message, 'le');
     console.error(err);
   } finally {
     btn.disabled = false;

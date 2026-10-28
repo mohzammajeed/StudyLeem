@@ -52,7 +52,7 @@ function setupSearch() {
     results.innerHTML = hits.map(m => {
       const slug = m.subjectSlug || toSlug(m.subject || '');
       const href = `/fbise/${m.type === 'books' ? 'books' : 'notes'}/${m.class}/${slug}`;
-      const icon = m.type === 'books' ? '📚' : '📝';
+      const icon = m.type === 'books' ? ic('book-open') : ic('notes');
       return `<a href="${href}" class="search-result-item">
         ${icon} <strong>${escHtml(m.title)}</strong>
         <span class="search-meta">Class ${m.class} · ${escHtml(m.subject)}</span>
@@ -102,7 +102,7 @@ function loadLatestMaterials(materials) {
         <img src="${escHtml(m.coverImage)}" alt="${escHtml(m.title)}" class="material-cover"
           onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 width=%27208%27 height=%27300%27%3E%3Crect fill=%27%23f3f4f6%27 width=%27208%27 height=%27300%27/%3E%3Ctext x=%2750%25%27 y=%2750%25%27 text-anchor=%27middle%27 dy=%27.3em%27 fill=%27%239ca3af%27 font-family=%27Arial%27 font-size=%2714%27%3ENo Image%3C/text%3E%3C/svg%3E'"
           loading="lazy">
-        <span class="material-type-badge">${m.type === 'books' ? '📚 Book' : '📝 Notes'}</span>
+        <span class="material-type-badge">${m.type === 'books' ? ic('book-open') + ' Book' : ic('notes') + ' Notes'}</span>
       </div>
       <div class="material-content">
         <h3 class="material-title">${escHtml(m.title)}</h3>

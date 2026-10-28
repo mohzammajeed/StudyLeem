@@ -54,8 +54,8 @@
     // Type switcher
     const sw = document.getElementById('typeSwitcher');
     sw.innerHTML = `
-      <a href="/fbise/notes/${cls}" class="type-switch-btn ${type==='notes'?'active':''}">📝 Notes</a>
-      <a href="/fbise/books/${cls}" class="type-switch-btn ${type==='books'?'active':''}">📚 Books</a>
+      <a href="/fbise/notes/${cls}" class="type-switch-btn ${type==='notes'?'active':''}">${ic('notes')} Notes</a>
+      <a href="/fbise/books/${cls}" class="type-switch-btn ${type==='books'?'active':''}">${ic('book-open')} Books</a>
     `;
 
     document.getElementById('subjectsHeading').textContent = `${typeLabel} – ${clsLabel}`;

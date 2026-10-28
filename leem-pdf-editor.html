@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+<script src="/icons.js"></script>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <title>PDF Annotator</title>
@@ -341,13 +342,13 @@ input[type=color]{width:28px;height:22px;border:1px solid var(--border);border-r
 <header>
   <div class="logo">PDF<span style="color:var(--text)">note</span></div>
   <div class="sep"></div>
-  <button class="hbtn" id="btnOpen">📂 Open PDF</button>
-  <button class="hbtn" id="btnNew">📄 Blank</button>
+  <button class="hbtn" id="btnOpen"><svg class="ic" width="1em" height="1em" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="/icons.svg#folder"/></svg> Open PDF</button>
+  <button class="hbtn" id="btnNew"><svg class="ic" width="1em" height="1em" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="/icons.svg#file"/></svg> Blank</button>
   <div class="sep"></div>
   <button class="hbtn" id="btnAddText" disabled>＋ Text</button>
   <button class="hbtn" id="btnAddImg"  disabled>＋ Image</button>
   <div class="sep"></div>
-  <button class="hbtn green" id="btnSave" disabled>💾 Export PDF</button>
+  <button class="hbtn green" id="btnSave" disabled><svg class="ic" width="1em" height="1em" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="/icons.svg#save"/></svg> Export PDF</button>
   <span class="page-info" id="pageInfo"></span>
 </header>
 
@@ -439,7 +440,7 @@ input[type=color]{width:28px;height:22px;border:1px solid var(--border);border-r
     <!-- SELECTED ELEMENT -->
     <div class="section" id="selSection" style="display:none">
       <h4>Selected</h4>
-      <button class="abtn danger" onclick="deleteSelected()">🗑 Delete</button>
+      <button class="abtn danger" onclick="deleteSelected()"><svg class="ic" width="1em" height="1em" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="/icons.svg#trash"/></svg> Delete</button>
     </div>
 
   </aside>
@@ -451,12 +452,12 @@ input[type=color]{width:28px;height:22px;border:1px solid var(--border);border-r
       <h2>PDF<span>note</span></h2>
       <p>Open a PDF to start annotating</p>
       <div class="drop-box" id="dropBox">
-        <span class="icon">📄</span>
+        <span class="icon"><svg class="ic" width="1em" height="1em" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="/icons.svg#file"/></svg></span>
         <strong>Click or drag a PDF here</strong>
         <small>Your file never leaves your device</small>
       </div>
       <p style="font-size:.72rem;color:var(--muted)">— or —</p>
-      <button class="hbtn" onclick="createBlank()" style="padding:8px 20px">✨ Create Blank Page</button>
+      <button class="hbtn" onclick="createBlank()" style="padding:8px 20px"><svg class="ic" width="1em" height="1em" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="/icons.svg#sparkles"/></svg> Create Blank Page</button>
     </div>
 
     <div id="viewerWrap" style="display:none;flex-direction:column;align-items:center"></div>
@@ -466,9 +467,9 @@ input[type=color]{width:28px;height:22px;border:1px solid var(--border);border-r
 
 <!-- Nav -->
 <div id="nav">
-  <button class="hbtn" id="btnPrev">← Prev</button>
+  <button class="hbtn" id="btnPrev"><svg class="ic" width="1em" height="1em" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="/icons.svg#arrow-left"/></svg> Prev</button>
   <span id="navInfo">1 / 1</span>
-  <button class="hbtn" id="btnNext">Next →</button>
+  <button class="hbtn" id="btnNext">Next <svg class="ic" width="1em" height="1em" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="/icons.svg#arrow-right"/></svg></button>
 </div>
 
 <!-- Toast -->
@@ -558,7 +559,7 @@ dropBox.addEventListener('drop', e => {
   e.preventDefault(); dropBox.classList.remove('over');
   const f = e.dataTransfer.files[0];
   if (f && f.type==='application/pdf') loadPDF(f);
-  else toast('⚠️ Please drop a PDF file');
+  else toast('Please drop a PDF file');
 });
 
 // Also support drag-drop anywhere on main
@@ -577,7 +578,7 @@ function onPdfChosen(e) {
 }
 
 async function loadPDF(file) {
-  toast('⏳ Opening PDF...');
+  toast('Opening PDF...');
   const ab = await file.arrayBuffer();
   pdfBytes = new Uint8Array(ab);
 
@@ -590,7 +591,7 @@ async function loadPDF(file) {
   document.getElementById('dropzone').style.display = 'none';
   buildViewer();
   enableUI();
-  toast(`✅ Loaded ${totalPages} page${totalPages>1?'s':''}`);
+  toast(`Loaded ${totalPages} page${totalPages>1?'s':''}`);
 }
 
 // Count pages without any library — scan PDF bytes for /Type /Page entries
@@ -631,7 +632,7 @@ startxref
   document.getElementById('dropzone').style.display = 'none';
   buildViewer();
   enableUI();
-  toast('✨ Blank page created');
+  toast('Blank page created');
 }
 
 // ─── VIEWER ──────────────────────────────────────────────────────────────────
@@ -758,7 +759,7 @@ function addTextAnn(pageNum, x, y) {
   selectEl(el);
   el.focus();
   document.execCommand('selectAll');
-  toast('📝 Text added — click to edit');
+  toast('Text added — click to edit');
 }
 
 // sync selected text element to sidebar controls
@@ -830,7 +831,7 @@ function addImageAnn(pageNum, src) {
     ov.appendChild(el);
     saveAnn(pageNum, el, 'image');
     selectEl(el);
-    toast('🖼 Image added');
+    toast('Image added');
   };
   tmp.src = src;
 }
@@ -892,7 +893,7 @@ function applyWatermark() {
     ov.appendChild(layer);
     wms[p] = layer;
   });
-  toast('🔒 Watermark applied');
+  toast('Watermark applied');
 }
 
 function removeWatermark() {
@@ -940,7 +941,7 @@ function deleteSelected() {
   });
   selEl.remove();
   deselect();
-  toast('🗑 Deleted');
+  toast('Deleted');
 }
 
 // Keyboard: Delete key
@@ -1059,7 +1060,7 @@ document.getElementById('btnSave').onclick = exportPDF;
 async function exportPDF() {
   const btn = document.getElementById('btnSave');
   btn.disabled = true;
-  btn.textContent = '⏳ Exporting...';
+  btn.textContent = 'Exporting...';
   toast('Building PDF...');
 
   try {
@@ -1174,15 +1175,15 @@ async function exportPDF() {
     const a    = document.createElement('a');
     a.href = url; a.download = 'annotated.pdf'; a.click();
     setTimeout(() => URL.revokeObjectURL(url), 5000);
-    toast('✅ PDF exported!');
+    toast('PDF exported!');
 
   } catch(err) {
-    toast('❌ Export failed: ' + err.message, 4000);
+    toast('Export failed: ' + err.message, 4000);
     console.error(err);
   }
 
   btn.disabled = false;
-  btn.textContent = '💾 Export PDF';
+  btn.textContent = 'Export PDF';
 }
 </script>
 </body>

@@ -61,7 +61,7 @@
     btn.setAttribute('aria-label', 'Ask LeemAI – FBISE AI Study Assistant');
     btn.innerHTML = (
       '<div class="sl-fab-dot"></div>' +
-      '<span style="font-size:1.05rem;line-height:1">🤖</span>' +
+      '<span style="font-size:1.05rem;line-height:1">' + ic('bot') + '</span>' +
       '<span class="sl-fab-label">Ask LeemAI</span>'
     );
     document.body.appendChild(btn);

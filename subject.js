@@ -49,7 +49,7 @@ function setupTabs() {
 
 async function loadMaterials(classNum, subject) {
     if (typeof DB === 'undefined') {
-        console.error('❌ DB not initialized');
+        console.error('DB not initialized');
         document.getElementById('materialsGrid').innerHTML = '<p class="loading">Database not ready. Please refresh.</p>';
         return;
     }
@@ -59,7 +59,7 @@ async function loadMaterials(classNum, subject) {
         allMaterials.sort((a, b) => (a.chapterNumber || 0) - (b.chapterNumber || 0));
         filterMaterials();
     } catch (error) {
-        console.error('❌ Load materials error:', error);
+        console.error('Load materials error:', error);
         document.getElementById('materialsGrid').innerHTML = '<p class="loading">Error loading materials.</p>';
     }
 }
@@ -92,7 +92,7 @@ function filterMaterials() {
                      class="material-cover"
                      onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 width=%27208%27 height=%27300%27%3E%3Crect fill=%27%23f3f4f6%27 width=%27208%27 height=%27300%27/%3E%3Ctext x=%2750%25%27 y=%2750%25%27 text-anchor=%27middle%27 dy=%27.3em%27 fill=%27%239ca3af%27 font-family=%27Arial%27 font-size=%2714%27%3ENo Image%3C/text%3E%3C/svg%3E'"
                      loading="lazy">
-                <span class="material-type-badge">${m.type === 'books' ? '📚 Book' : '📝 Notes'}</span>
+                <span class="material-type-badge">${m.type === 'books' ? ic('book-open') + ' Book' : ic('notes') + ' Notes'}</span>
             </div>
             <div class="material-content">
                 <h3 class="material-title">${escapeHtml(m.title)}</h3>
@@ -102,7 +102,7 @@ function filterMaterials() {
                     ${m.chapterNumber ? `<span>Ch. ${m.chapterNumber}</span>` : ''}
                 </div>
                 <p class="material-description">${escapeHtml(m.description || '')}</p>
-                <div class="card-preview-hint">👁 Click to Preview &amp; Download</div>
+                <div class="card-preview-hint">${ic('eye')} Click to Preview &amp; Download</div>
             </div>
         </div>`;
     }).join('');

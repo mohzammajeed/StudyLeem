@@ -42,10 +42,22 @@
     return m ? m[1] : null;
   }
 
+  // MEGA: mega.nz/file/ID#KEY, mega.nz/#!ID!KEY, mega.nz/embed/ID#KEY  ->  https://mega.nz/embed/ID#KEY
+  function megaEmbed(url) {
+    if (!url || !/mega\.(nz|co\.nz)/i.test(url)) return null;
+    const m = url.match(/\/(?:file|embed)\/([\w-]+)#([\w-]+)/i) || url.match(/#!([\w-]+)!([\w-]+)/);
+    return m ? `https://mega.nz/embed/${m[1]}#${m[2]}` : null;
+  }
+
   // Returns ordered list of embed strategies to try
   function getEmbedStrategies(rawUrl) {
     const id = driveId(rawUrl);
     const strategies = [];
+    const mega = megaEmbed(rawUrl);
+    if (mega) {
+      strategies.push({ url: mega, label: 'Mega Viewer', sandbox: null, mega: true, timeout: 25000 });
+      return strategies;
+    }
 
     if (id) {
       // Strategy 1: GDrive preview (works on desktop, often blocked on mobile)
@@ -225,7 +237,7 @@
 
       // Small delay so 'about:blank' actually clears before new src
       setTimeout(() => {
-        iframe.setAttribute('sandbox', s.sandbox);
+        if (s.sandbox) iframe.setAttribute('sandbox', s.sandbox);
         iframe.src = s.url;
       }, 80);
 
@@ -233,7 +245,7 @@
       // We detect a blocked GDrive frame by checking contentDocument title
       // after load — blocked frames show "Signin" or have no document access.
       // For safety we also use a timeout per strategy.
-      const STRATEGY_TIMEOUT = idx === 0 ? 8000 : 12000;
+      const STRATEGY_TIMEOUT = s.timeout || (idx === 0 ? 8000 : 12000);
 
       let timedOut = false;
       const timer = setTimeout(() => {
@@ -276,7 +288,7 @@
           errorDiv.style.display = 'none';
           iframe.style.display   = 'block';
           // Anti-DL overlay only makes sense for GDrive (strategy 0)
-          overlay.style.display  = (idx === 0) ? 'block' : 'none';
+          overlay.style.display  = (idx === 0 && !s.mega) ? 'block' : 'none';
         }, 1000);
       };
 
@@ -360,8 +372,8 @@
 
       if (_timerCount <= 0) {
         clearInterval(_dlTimer);
-        if (numEl) numEl.textContent = '✓';
-        if (goBtn) { goBtn.disabled = false; goBtn.textContent = '⬇ Download Now'; }
+        if (numEl) numEl.innerHTML = ic('check');
+        if (goBtn) { goBtn.disabled = false; goBtn.innerHTML = ic('download') + ' Download Now'; }
         if (circleEl) circleEl.style.stroke = '#22c55e'; // green when ready
       }
     }, 1000);

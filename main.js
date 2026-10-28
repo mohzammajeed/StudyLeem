@@ -60,7 +60,7 @@ style.textContent = `
 `;
 document.head.appendChild(style);
 
-console.log('StudyLeem - Main JavaScript Loaded ✅');
+console.log('StudyLeem - Main JavaScript Loaded ');
 
 // ============================================
 // LEEMAI FLOATING BUTTON — appears on all pages
@@ -146,7 +146,7 @@ console.log('StudyLeem - Main JavaScript Loaded ✅');
   fab.setAttribute('aria-label', 'Ask LeemAI — FBISE AI Assistant');
   fab.innerHTML = `
     <div class="leemai-fab-pulse"></div>
-    <span class="leemai-fab-icon">🤖</span>
+    <span class="leemai-fab-icon">${ic('bot')}</span>
     <span class="leemai-fab-text">Ask LeemAI</span>
   `;
   document.body.appendChild(fab);

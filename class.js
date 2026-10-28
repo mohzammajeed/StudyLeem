@@ -39,7 +39,7 @@ async function initPage(classNum) {
     const container = document.getElementById('subjectsGrid');
 
     if (typeof DB === 'undefined') {
-        console.error('❌ DB not initialized');
+        console.error('DB not initialized');
         container.innerHTML = '<p class="loading">Database not ready. Please refresh.</p>';
         return;
     }
@@ -49,7 +49,7 @@ async function initPage(classNum) {
 
         const materials = await DB.getByClass(classNum);
 
-        console.log(`✅ Found ${materials.length} materials for class ${classNum}`);
+        console.log(`Found ${materials.length} materials for class ${classNum}`);
 
         if (materials.length === 0) {
             container.innerHTML = '<p class="loading">No subjects available for this class yet.</p>';
@@ -81,7 +81,7 @@ async function initPage(classNum) {
         }).join('');
 
     } catch (error) {
-        console.error('❌ Load subjects error:', error);
+        console.error('Load subjects error:', error);
         container.innerHTML = '<p class="loading">Error loading subjects. Check console for details.</p>';
     }
 }

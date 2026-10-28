@@ -28,7 +28,7 @@ function showLogin() {
       );
       showDashboard();
     } catch (err) {
-      errorEl.textContent = '❌ ' + err.message;
+      errorEl.textContent = err.message;
     }
   };
 }
@@ -118,10 +118,10 @@ function setupForms() {
     const v = this.value.trim();
     const el = document.getElementById('pdfPreviewLink');
     if (!v) { el.innerHTML = ''; return; }
-    const isGDrive = v.includes('drive.google.com');
+    const isGDrive = v.includes('drive.google.com') || /mega\.(nz|co\.nz)/i.test(v);
     el.innerHTML = isGDrive
-      ? '✅ Google Drive link detected — will embed with Google viewer'
-      : `Preview: <a href="${escHtml(v)}" target="_blank" rel="noopener">Open URL ↗</a>`;
+      ? ic('check-circle') + ' ' + (v.includes('mega.') ? 'Mega link detected — will embed with the Mega viewer' : 'Google Drive link detected — will embed with Google viewer')
+      : `Preview: <a href="${escHtml(v)}" target="_blank" rel="noopener">Open URL ${ic('external')}</a>`;
   };
 
   // Upload form
@@ -173,7 +173,7 @@ function setupForms() {
     }
 
     if (errors.length) {
-      statusEl.textContent = '❌ Required: ' + errors.join(', ');
+      statusEl.textContent = 'Required: ' + errors.join(', ');
       statusEl.className   = 'status-message error';
       return;
     }
@@ -196,7 +196,7 @@ function setupForms() {
         url = `/fbise/books/${data.class}/${subSlug}`;
       }
 
-      statusEl.textContent = '✅ Uploaded successfully!';
+      statusEl.textContent = 'Uploaded successfully!';
       statusEl.className   = 'status-message success';
       genLink.textContent  = location.origin + url;
       genLink.href         = url;
@@ -213,7 +213,7 @@ function setupForms() {
       updateExercisePreview();
       setTimeout(() => { statusEl.textContent = ''; statusEl.className = ''; }, 8000);
     } catch (err) {
-      statusEl.textContent = '❌ Upload failed: ' + err.message;
+      statusEl.textContent = 'Upload failed: ' + err.message;
       statusEl.className   = 'status-message error';
     } finally {
       btnText.textContent = 'Upload Material';
@@ -249,9 +249,9 @@ function setupForms() {
       await DB.update(currentEditId, updates);
       closeModal('editModal');
       loadMaterials();
-      alert('✅ Material updated!');
+      alert('Material updated');
     } catch (err) {
-      alert('❌ Update failed: ' + err.message);
+      alert('Update failed: ' + err.message);
     }
   };
 
@@ -271,7 +271,7 @@ function setupForms() {
     const blob = new Blob([JSON.stringify({ items }, null, 2)], { type: 'application/json' });
     const a = Object.assign(document.createElement('a'), { href: URL.createObjectURL(blob), download: `studyleem-materials-${new Date().toISOString().slice(0,10)}.json` });
     a.click(); URL.revokeObjectURL(a.href);
-    say(`✅ Exported ${items.length} materials.`);
+    say(`Exported ${items.length} materials.`);
   };
 
   document.getElementById('importFile').onchange = async function () {
@@ -282,9 +282,9 @@ function setupForms() {
       const items = Array.isArray(data) ? data : data.items;
       if (!Array.isArray(items)) throw new Error('File must be an array or {"items": [...]}');
       const r = await DB.importItems(items);
-      say(`✅ Imported ${r.imported} materials${r.skipped ? `, skipped ${r.skipped} invalid` : ''}.`);
+      say(`Imported ${r.imported} materials${r.skipped ? `, skipped ${r.skipped} invalid` : ''}.`);
       loadStats(); loadMaterials();
-    } catch (e) { say('❌ ' + e.message); }
+    } catch (e) { say('Error: ' + e.message); }
     this.value = '';
   };
 
@@ -308,9 +308,9 @@ function setupForms() {
         token = j.nextPageToken || '';
       } while (token);
       const r = await DB.importItems(items);
-      say(`✅ Imported ${r.imported} materials${r.skipped ? `, skipped ${r.skipped} invalid` : ''}.`);
+      say(`Imported ${r.imported} materials${r.skipped ? `, skipped ${r.skipped} invalid` : ''}.`);
       loadStats(); loadMaterials();
-    } catch (e) { say('❌ ' + e.message); }
+    } catch (e) { say('Error: ' + e.message); }
     this.disabled = false;
   };
 
@@ -373,11 +373,11 @@ function renderTable(materials) {
       <td><img src="${escHtml(m.coverImage)}" class="material-cover-thumb"
           onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 width=%2760%27 height=%2760%27%3E%3Crect fill=%27%23f3f4f6%27 width=%2760%27 height=%2760%27/%3E%3C/svg%3E'"></td>
       <td>${escHtml(m.title)}</td>
-      <td>${m.type === 'books' ? '📚' : '📝'} ${m.type}</td>
+      <td>${m.type === 'books' ? ic('book-open') : ic('notes')} ${m.type}</td>
       <td>Class ${m.class}</td>
       <td>${escHtml(m.subject)}</td>
       <td>${chEx}</td>
-      <td>${url ? `<a href="${url}" target="_blank" style="color:#2563eb;font-size:.78rem;">View ↗</a>` : '—'}</td>
+      <td>${url ? `<a href="${url}" target="_blank" style="color:#2563eb;font-size:.78rem;">View ${ic('external')}</a>` : '—'}</td>
       <td>
         <div class="table-actions">
           <button class="btn btn-secondary btn-sm" onclick="editMaterial('${m.id}')">Edit</button>
@@ -430,9 +430,9 @@ window.deleteMaterial = async function(id) {
   try {
     await DB.delete(id);
     loadMaterials(); loadStats();
-    alert('✅ Deleted!');
+    alert('Deleted');
   } catch (err) {
-    alert('❌ ' + err.message);
+    alert('Error: ' + err.message);
   }
 };
 
@@ -472,7 +472,7 @@ function renderMessages(messages) {
     const date    = m.sentAt ? new Date(m.sentAt).toLocaleDateString('en-GB') : '—';
     const preview = (m.message || '').substring(0, 55) + ((m.message || '').length > 55 ? '…' : '');
     return `<tr style="${!m.read ? 'font-weight:600;background:#f0f7ff;' : ''}">
-      <td>${!m.read ? '🔵 New' : '✅ Read'}</td>
+      <td>${!m.read ? ic('dot') + ' New' : ic('check-circle') + ' Read'}</td>
       <td>${escHtml(m.name || '')}</td>
       <td><a href="mailto:${escHtml(m.email||'')}">${escHtml(m.email||'')}</a></td>
       <td>${escHtml(m.subjectLabel || m.subject || 'General')}</td>
@@ -510,7 +510,7 @@ window.viewMessage = async function(id) {
     </table>
     <hr style="margin:1rem 0;border:1px solid #e5e7eb;">
     <p style="line-height:1.8;white-space:pre-wrap;color:#1f2937;margin-bottom:1.5rem">${escHtml(msg.message||'')}</p>
-    <a href="mailto:${escHtml(msg.email||'')}?subject=Re: StudyLeem" class="btn btn-primary">↩ Reply</a>`;
+    <a href="mailto:${escHtml(msg.email||'')}?subject=Re: StudyLeem" class="btn btn-primary">${ic('undo')} Reply</a>`;
   document.getElementById('viewMessageModal').classList.add('active');
   if (!msg.read) {
     try {
@@ -528,7 +528,7 @@ window.deleteMessage = async function(id) {
     await Messages.remove(id);
     allMessages = allMessages.filter(m => m.id !== id);
     renderMessages(allMessages);
-  } catch (err) { alert('❌ ' + err.message); }
+  } catch (err) { alert('Error: ' + err.message); }
 };
 
 // ── Utilities ─────────────────────────────────────

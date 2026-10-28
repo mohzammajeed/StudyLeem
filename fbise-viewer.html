@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+<script src="/icons.js"></script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title id="pageTitle">View PDF – StudyLeem</title>
@@ -180,11 +181,11 @@ body{display:flex;flex-direction:column;min-height:100vh;margin:0;font-family:'I
 
 <!-- Top bar -->
 <div class="viewer-bar">
-  <a href="#" id="backLink" class="viewer-back">← Back</a>
+  <a href="#" id="backLink" class="viewer-back"><svg class="ic" width="1em" height="1em" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="/icons.svg#arrow-left"/></svg> Back</a>
   <span class="viewer-title" id="docTitle">Loading…</span>
   <div class="viewer-actions">
-    <button class="viewer-btn" id="downloadBtn" onclick="startDownload()" aria-label="Download PDF">⬇ Download</button>
-    <a href="#" id="openTabBtn" class="viewer-btn" target="_blank" rel="noopener" aria-label="Open in new tab">↗ Open</a>
+    <button class="viewer-btn" id="downloadBtn" onclick="startDownload()" aria-label="Download PDF"><svg class="ic" width="1em" height="1em" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="/icons.svg#download"/></svg> Download</button>
+    <a href="#" id="openTabBtn" class="viewer-btn" target="_blank" rel="noopener" aria-label="Open in new tab"><svg class="ic" width="1em" height="1em" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="/icons.svg#external"/></svg> Open</a>
   </div>
 </div>
 
@@ -214,10 +215,10 @@ body{display:flex;flex-direction:column;min-height:100vh;margin:0;font-family:'I
       <p>Loading PDF, please wait…</p>
     </div>
     <div class="pdf-error" id="pdfError">
-      <div class="error-icon">📄</div>
+      <div class="error-icon"><svg class="ic" width="1em" height="1em" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="/icons.svg#file"/></svg></div>
       <h2>PDF Not Loading?</h2>
       <p>Your browser may be blocking the embedded preview.</p>
-      <a href="#" id="fallbackOpen" target="_blank" rel="noopener" class="fallback-btn">Open PDF Directly ↗</a>
+      <a href="#" id="fallbackOpen" target="_blank" rel="noopener" class="fallback-btn">Open PDF Directly <svg class="ic" width="1em" height="1em" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="/icons.svg#external"/></svg></a>
     </div>
     <!-- Transparent overlay to block GDrive's built-in download button -->
     <div class="anti-dl-overlay" id="antiDlOverlay" title="Use the Download button above"></div>
@@ -229,7 +230,7 @@ body{display:flex;flex-direction:column;min-height:100vh;margin:0;font-family:'I
 <!-- Download countdown modal -->
 <div class="dl-backdrop" id="dlBackdrop" role="dialog" aria-modal="true" aria-label="Download countdown">
   <div class="dl-modal">
-    <div class="dl-modal-icon">📥</div>
+    <div class="dl-modal-icon"><svg class="ic" width="1em" height="1em" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="/icons.svg#download"/></svg></div>
     <h3>Preparing Download</h3>
     <p id="dlModalSubtitle">Your file will be ready in a moment…</p>
     <div class="dl-ring-wrap">
@@ -240,7 +241,7 @@ body{display:flex;flex-direction:column;min-height:100vh;margin:0;font-family:'I
       </svg>
       <span class="dl-ring-num" id="timerNum">15</span>
     </div>
-    <p class="dl-hint">This helps us keep StudyLeem 100% free 🙏</p>
+    <p class="dl-hint">This helps us keep StudyLeem 100% free <svg class="ic" width="1em" height="1em" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="/icons.svg#heart"/></svg></p>
     <div class="dl-actions">
       <button class="dl-btn dl-cancel" onclick="cancelDownload()">Cancel</button>
       <button class="dl-btn dl-go" id="dlGoBtn" disabled onclick="doDownload()">Download Now</button>

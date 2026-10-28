@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+<script src="/icons.js"></script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title id="pageTitle">FBISE Class Notes – StudyLeem</title>
@@ -35,11 +36,13 @@
         </a>
       </div>
       <nav class="nav" aria-label="Main navigation">
-        <a href="/" class="nav-link">Home</a>
-        <a href="/fbise" class="nav-link">FBISE</a>
-        <a href="/about" class="nav-link">About</a>
-        <a href="/contact" class="nav-link">Contact</a>
-      </nav>
+      <a href="/" class="nav-link">Home</a>
+      <a href="/fbise" class="nav-link active">FBISE</a>
+      <a href="/#classes" class="nav-link">Classes</a>
+      <a href="/leemai" class="nav-link">LeemAI</a>
+      <a href="/about" class="nav-link">About</a>
+      <a href="/contact" class="nav-link">Contact</a>
+    </nav>
       <button class="mobile-menu-btn" id="mobileMenuBtn" aria-label="Open menu">
         <span></span><span></span><span></span>
       </button>
@@ -47,20 +50,21 @@
   </div>
 </header>
 <div class="mobile-menu" id="mobileMenu" role="navigation" aria-label="Mobile navigation">
-  <a href="/" class="mobile-nav-link">🏠 Home</a>
-  <a href="/fbise" class="mobile-nav-link">📚 FBISE</a>
-  <a href="/fbise/notes/9" class="mobile-nav-link">· Class 9 Notes</a>
-  <a href="/fbise/notes/10" class="mobile-nav-link">· Class 10 Notes</a>
-  <a href="/fbise/notes/11" class="mobile-nav-link">· Class 11 Notes</a>
-  <a href="/fbise/notes/12" class="mobile-nav-link">· Class 12 Notes</a>
-  <a href="/fbise/books/9" class="mobile-nav-link">· Class 9 Books</a>
-  <a href="/fbise/books/10" class="mobile-nav-link">· Class 10 Books</a>
-  <a href="/fbise/books/11" class="mobile-nav-link">· Class 11 Books</a>
-  <a href="/fbise/books/12" class="mobile-nav-link">· Class 12 Books</a>
-  <a href="/about" class="mobile-nav-link">ℹ️ About</a>
-  <a href="/contact" class="mobile-nav-link">✉️ Contact</a>
-  <a href="/privacy" class="mobile-nav-link">🔒 Privacy Policy</a>
-  <a href="/terms" class="mobile-nav-link">📋 Terms of Use</a>
+  <a href="/" class="mobile-nav-link"><svg class="ic" width="1em" height="1em" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="/icons.svg#home"/></svg> Home</a>
+  <a href="/fbise" class="mobile-nav-link active"><svg class="ic" width="1em" height="1em" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="/icons.svg#book-open"/></svg> FBISE</a>
+  <a href="/fbise/notes/9" class="mobile-nav-link"><svg class="ic" width="1em" height="1em" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="/icons.svg#notes"/></svg> Class 9 Notes</a>
+  <a href="/fbise/notes/10" class="mobile-nav-link"><svg class="ic" width="1em" height="1em" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="/icons.svg#notes"/></svg> Class 10 Notes</a>
+  <a href="/fbise/notes/11" class="mobile-nav-link"><svg class="ic" width="1em" height="1em" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="/icons.svg#notes"/></svg> Class 11 Notes</a>
+  <a href="/fbise/notes/12" class="mobile-nav-link"><svg class="ic" width="1em" height="1em" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="/icons.svg#notes"/></svg> Class 12 Notes</a>
+  <a href="/fbise/books/9" class="mobile-nav-link"><svg class="ic" width="1em" height="1em" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="/icons.svg#book"/></svg> Class 9 Books</a>
+  <a href="/fbise/books/10" class="mobile-nav-link"><svg class="ic" width="1em" height="1em" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="/icons.svg#book"/></svg> Class 10 Books</a>
+  <a href="/fbise/books/11" class="mobile-nav-link"><svg class="ic" width="1em" height="1em" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="/icons.svg#book"/></svg> Class 11 Books</a>
+  <a href="/fbise/books/12" class="mobile-nav-link"><svg class="ic" width="1em" height="1em" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="/icons.svg#book"/></svg> Class 12 Books</a>
+  <a href="/leemai" class="mobile-nav-link"><svg class="ic" width="1em" height="1em" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="/icons.svg#bot"/></svg> LeemAI</a>
+  <a href="/about" class="mobile-nav-link"><svg class="ic" width="1em" height="1em" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="/icons.svg#info"/></svg> About</a>
+  <a href="/contact" class="mobile-nav-link"><svg class="ic" width="1em" height="1em" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="/icons.svg#mail"/></svg> Contact</a>
+  <a href="/privacy" class="mobile-nav-link"><svg class="ic" width="1em" height="1em" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="/icons.svg#lock"/></svg> Privacy Policy</a>
+  <a href="/terms" class="mobile-nav-link"><svg class="ic" width="1em" height="1em" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="/icons.svg#clipboard"/></svg> Terms of Use</a>
 </div>
 
 <div class="main-content">
@@ -102,13 +106,13 @@
           </div>
           <p class="footer-tagline">Free FBISE study materials for Federal Board Pakistan students — 100% free, no registration required.</p>
           <div class="footer-badges">
-            <span class="footer-badge">📚 FBISE</span>
-            <span class="footer-badge">🇵🇰 Pakistan</span>
-            <span class="footer-badge">✅ Free</span>
+            <span class="footer-badge"><svg class="ic" width="1em" height="1em" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="/icons.svg#book-open"/></svg> FBISE</span>
+            <span class="footer-badge"><svg class="ic" width="1em" height="1em" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="/icons.svg#map-pin"/></svg> Pakistan</span>
+            <span class="footer-badge"><svg class="ic" width="1em" height="1em" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="/icons.svg#check-circle"/></svg> Free</span>
           </div>
         </div>
         <div class="footer-col">
-          <h4 class="footer-col-title">📝 Notes</h4>
+          <h4 class="footer-col-title"><svg class="ic" width="1em" height="1em" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="/icons.svg#notes"/></svg> Notes</h4>
           <ul class="footer-list">
             <li><a href="/fbise/notes/9">Class 9 Notes</a></li>
             <li><a href="/fbise/notes/10">Class 10 Notes</a></li>
@@ -117,7 +121,7 @@
           </ul>
         </div>
         <div class="footer-col">
-          <h4 class="footer-col-title">📚 Books</h4>
+          <h4 class="footer-col-title"><svg class="ic" width="1em" height="1em" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="/icons.svg#book-open"/></svg> Books</h4>
           <ul class="footer-list">
             <li><a href="/fbise/books/9">Class 9 Books</a></li>
             <li><a href="/fbise/books/10">Class 10 Books</a></li>
@@ -126,7 +130,7 @@
           </ul>
         </div>
         <div class="footer-col">
-          <h4 class="footer-col-title">🔗 Links</h4>
+          <h4 class="footer-col-title"><svg class="ic" width="1em" height="1em" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="/icons.svg#link"/></svg> Links</h4>
           <ul class="footer-list">
             <li><a href="/">Home</a></li>
             <li><a href="/fbise">FBISE Hub</a></li>

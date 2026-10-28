@@ -93,12 +93,12 @@
         const href = `/fbise/books/${cls}/${subjectSlug}/book-${m.id}`;
         return `
           <a href="${href}" class="chapter-item book-item" aria-label="${escHtml(m.title)}">
-            <div class="chapter-num">📚 Full Textbook</div>
+            <div class="chapter-num">${ic('book-open')} Full Textbook</div>
             <div class="chapter-info">
               <h3 class="chapter-title">${escHtml(m.title)}</h3>
               ${m.description ? `<p class="chapter-desc">${escHtml(m.description.substring(0,120))}${m.description.length>120?'…':''}</p>` : ''}
             </div>
-            <div class="chapter-arrow">→</div>
+            <div class="chapter-arrow">${ic('arrow-right')}</div>
           </a>
         `;
       }).join('');
@@ -115,7 +115,7 @@
       const label = isEx
         ? `Exercise ${m.chapterNumber}.${m.exerciseNumber || ''}`
         : `Chapter ${m.chapterNumber}`;
-      const icon  = isEx ? '🧮' : '📖';
+      const icon  = isEx ? ic('calculator') : ic('book');
 
       return `
         <a href="${href}" class="chapter-item" aria-label="${escHtml(label)}: ${escHtml(m.title)}">
@@ -124,7 +124,7 @@
             <h3 class="chapter-title">${escHtml(m.title)}</h3>
             ${m.description ? `<p class="chapter-desc">${escHtml(m.description.substring(0,100))}${m.description.length>100?'…':''}</p>` : ''}
           </div>
-          <div class="chapter-arrow">→</div>
+          <div class="chapter-arrow">${ic('arrow-right')}</div>
         </a>
       `;
     }).join('');
