@@ -707,8 +707,15 @@ async function sendMessage() {
       body: JSON.stringify({ question: query })
     });
 
-    const data = await res.json();
+    const data = await res.json().catch(() => null);
     removeTyping(typingId);
+
+    if (!data) {
+      appendMessage('ai', res.status === 404
+        ? 'LeemAI service was not found on this site (HTTP 404). The api/ask.js file is not deployed correctly.'
+        : 'LeemAI server returned an unexpected response (HTTP ' + res.status + '). Check the function logs in Vercel.');
+      sendBtn.disabled = false; chatInput.focus(); return;
+    }
 
     if (!res.ok) {
       appendMessage('ai', '' + (data.detail || 'Something went wrong. Please try again.'));
